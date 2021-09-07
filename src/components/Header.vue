@@ -1,0 +1,31 @@
+<script setup>
+</script>
+
+<template>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+
+
+      <a class="navbar-brand" href="#">UDAP</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup"
+              aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse d-flex justify-content-between" id="navbarNavAltMarkup">
+        <div class="navbar-nav">
+          <a class="nav-link active" aria-current="page" href="#">Dashboard</a>
+          <a class="nav-link" href="#">Endpoints</a>
+          <a class="nav-link" href="#">Configuration</a>
+
+        </div>
+        <div class="navbar-nav">
+          <a class="nav-link" href="#">Diagnostic</a>
+        </div>
+
+      </div>
+    </div>
+  </nav>
+</template>
+
+<style scoped>
+</style>

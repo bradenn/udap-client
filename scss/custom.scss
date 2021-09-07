@@ -1,0 +1,23 @@
+// Required
+
+
+$theme-colors: (
+        "primary": #0074d9,
+        "danger": #ff4136,
+        "dark": #1e1e1e
+);
+
+html {
+  font-family: Roboto, serif;
+}
+
+$body-bg: #121212;
+$body-color: #FFF;
+$card-bg: #1e1e1e;
+$list-group-bg: $card-bg;
+$list-group-color: $body-color;
+$text-muted: darken($body-color, 60);
+
+@import "../node_modules/bootstrap/scss/bootstrap";
+
+
