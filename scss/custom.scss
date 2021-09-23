@@ -2,7 +2,7 @@
 
 
 $theme-colors: (
-        "primary": #0074d9,
+        "primary": rgb(10, 132, 255),
         "danger": #ff4136,
         "dark": #1e1e1e
 );
@@ -16,8 +16,66 @@ $body-color: #FFF;
 $card-bg: #1e1e1e;
 $list-group-bg: $card-bg;
 $list-group-color: $body-color;
-$text-muted: darken($body-color, 60);
+$text-muted: darken($body-color, 25);
+$grid-gutter-width: 1em;
 
 @import "../node_modules/bootstrap/scss/bootstrap";
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+.bg-blur{
+  background-color: rgba(255, 255, 255, 0.10);
+  backdrop-filter: blur(64px);
+  border-radius: 1em !important;
+  font-size: 0.88em;
+  line-height: 1.5em;
+  padding-inline: 1em;
+  height: 1.5em;
+}
+
+.divider {
+  width: 100%;
+  height: 1px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.16);
+  margin-bottom: 0.5em;
+}
+
+a:active {
+  text-decoration: none;
+  color: inherit;
+}
+
+.router-link-exact-active.icon {
+  text-decoration: none;
+  color: inherit;
+  background-color: $primary;
+}
+
+.list-group-item {
+  background-color: rgba(255, 255, 255, 0.10);
+  backdrop-filter: blur(64px);
+  border-radius: 10px !important;
+  margin-bottom: 8px;
+  border: none !important;
+}
+
+.list-group-item:last-of-type {
+  margin-bottom: 0;
+}
+
+.element {
+  padding: 0.5em 0.5em;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12), 0 8px 24px rgba(0, 0, 0, 0.11);
+  background-color: rgba(255, 255, 255, 0.10);
+  backdrop-filter: blur(64px);
+}
+
+
+
 
 

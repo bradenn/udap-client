@@ -16,7 +16,7 @@ export default {
 
 <template>
  <div>
-   Hello
+   Tools
  </div>
 </template>
 

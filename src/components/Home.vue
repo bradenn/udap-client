@@ -1,4 +1,6 @@
 <script>
+import axios from "axios";
+
 export default {
   data() {
     return {
@@ -6,6 +8,7 @@ export default {
       endpoints: null,
       groups: null,
       modules: null,
+      instances: null,
       error: null,
     }
   },
@@ -18,31 +21,30 @@ export default {
         },
         // fetch the data when the view is created and the data is
         // already being observed
-        { immediate: true }
+        {immediate: true}
     )
   },
   methods: {
+    runFunction(id, name) {
+      const config = {
+        headers: {Authorization: `Bearer ${this.$JWT}`}
+      }
+      this.$http.get(`http://localhost:3020/instances/${id}/func/${name}`, config).then(res => {
+        alert(JSON.stringify(res.data))
+      }).catch(err => {
+        this.error = err
+        this.loading = false
+      })
+    },
     fetchData() {
-      this.error = this.endpoints = this.groups = null
+      this.error = this.groups = null
       this.loading = true
 
-      this.$http.get("http://localhost:3020/endpoints").then(res => {
-        this.endpoints = res.data
-        this.loading = false
-      }).catch(err => {
-        this.error = err
-        this.loading = false
-      })
+      const config = {
+        headers: {Authorization: `Bearer ${this.$JWT}`}
+      }
 
-      this.$http.get("http://localhost:3020/groups").then(res => {
-        this.groups = res.data
-        this.loading = false
-      }).catch(err => {
-        this.error = err
-        this.loading = false
-      })
-
-      this.$http.get("http://localhost:3020/modules").then(res => {
+      this.$http.get("http://localhost:3020/modules", config).then(res => {
         this.modules = res.data
         this.loading = false
       }).catch(err => {
@@ -50,7 +52,13 @@ export default {
         this.loading = false
       })
 
-
+      this.$http.get("http://localhost:3020/instances", config).then(res => {
+        this.instances = res.data
+        this.loading = false
+      }).catch(err => {
+        this.error = err
+        this.loading = false
+      })
 
     },
   },
@@ -58,47 +66,55 @@ export default {
 </script>
 
 <template>
-  <h1>Dashboard</h1>
-  <hr>
-  <div class="d-flex flex-row justify-content-evenly">
-    <div class="card flex-grow-1">
-      <div class="card-header">
-        Modules ({{modules.length}})
-      </div>
-      <div class="list-group-flush">
-        <div v-for="module in modules" class="list-group-item">
-          <div>{{module.name}}<span class="text-muted"> @ 1.1</span></div>
-          <div class="small text-muted">{{module.description}}</div>
-        </div>
-      </div>
+  <div>
+    <div v-if="loading">
+      Loading...
     </div>
-    <div class="card flex-grow-1">
-      <div class="card-header">
-        Endpoints
-      </div>
-      <div class="list-group-flush">
-        <div v-for="endpoint in endpoints" class="list-group-item d-flex justify-content-between">
-
-          <div>
-            {{endpoint.name}}
-            <div class="text-muted small">{{endpoint.groups.map(g => g.name).join(", ")}}</div>
-          </div>
-          <div class="text-primary">This terminal</div>
-        </div>
-
-      </div>
+    <div v-else-if="error">
+      {{ error }}
     </div>
-    <div class="card flex-grow-1">
-      <div class="card-header">
-        Groups
-      </div>
-      <div class="list-group-flush">
-        <div v-for="group in groups" class="list-group-item d-flex justify-content-between">
-          <div>
-            {{group.name}}
-            <div class="text-muted small"></div>
-          </div>
 
+    <div v-else>
+      <div class="row">
+        <div class="col-4">
+          <div class="element">
+            <div class="d-flex justify-content-between align-content-center mt-1">
+              <h6 class="mx-1">Modules</h6>
+              <div class="bg-blur">Load</div>
+
+            </div>
+            <div class="divider"></div>
+            <div class="list-group-flush">
+              <div v-for="module in modules" class="list-group-item d-flex justify-content-between">
+
+                <div>
+                  {{ module.name }}
+                  <div class="text-muted small">{{ module.description }}</div>
+                </div>
+
+                <div class="text-muted">v{{ module.version }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-4">
+          <div class="element">
+            <div class="list-group-flush">
+              <div v-for="instance in instances" class="list-group-item d-flex justify-content-between">
+
+                <div>
+                  <div>{{ instance.name }}</div>
+                  <div class="text-muted small">{{ instance.description }}</div>
+                  <ul class="list-group">
+                    <li v-for="func in instance.module.functions" class="list-group-item">
+                      <a v-on:click="runFunction(instance.id, func)" href="#">{{ func }}</a>
+                    </li>
+                  </ul>
+                </div>
+
+              </div>
+            </div>
+          </div>
         </div>
 
       </div>
@@ -107,6 +123,7 @@ export default {
 </template>
 
 <style scoped>
+
 .card {
   column-gap: 1em !important;
 }

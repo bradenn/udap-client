@@ -5,12 +5,20 @@ import Header from "./components/Header.vue"
 </script>
 
 <template>
-  <Header></Header>
-  <div class="container mt-4">
+
+  <div class="backdrop pt-4">
     <router-view/>
   </div>
 </template>
 
 <style>
+.backdrop {
+  height: 100vh;
+  background-repeat: no-repeat !important;
+  background-size: cover !important;
 
+  background: black;
+  background-image: url("/public/bg.jpg");
+
+}
 </style>
