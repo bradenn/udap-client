@@ -10,27 +10,17 @@ export default {
     }
   },
   props: {
+    media: Object,
     multiline: Boolean
   },
   created() {
-    this.getPlaying()
-    this.mediaTimer = setInterval(this.updateDuration, 1000)
+  },
+  watch: {
+    media: function (a, b) {
+      this.getPlaying()
+    }
   },
   methods: {
-    updateDuration() {
-      this.currentTime += this.playing ? 1000 : 0;
-    },
-    runFunction(id, name) {
-      const config = {
-        headers: {Authorization: `Bearer ${this.$JWT}`}
-      }
-      this.$http.get(`http://localhost:3020/instances/${id}/func/${name}`, config).then(res => {
-        this.getPlaying()
-      }).catch(err => {
-        this.error = err
-        this.loading = false
-      })
-    },
     durationPercent() {
       return this.currentTime / this.duration
     },
@@ -40,34 +30,10 @@ export default {
       if (this.currentTime >= this.duration) this.getPlaying()
       return `${Math.floor(a / 60)}:${Math.round(b)}`
     },
-    togglePlay() {
-      if (this.playing) {
-        this.runFunction('6146b26c08aa0c4a0ac7ed38', 'pause')
-        this.playing = false
-      } else {
-        this.runFunction('6146b26c08aa0c4a0ac7ed38', 'play')
-        this.playing = true
-      }
-
-    },
     getPlaying() {
-
-      const config = {
-        headers: {Authorization: `Bearer ${this.$JWT}`}
-      }
-
-      this.$http.get("http://localhost:3020/instances/6146b26c08aa0c4a0ac7ed38/func/currentlyPlaying", config).then(res => {
-        this.endpoints = res.data
-        this.currentTime = this.endpoints.progress_ms
-        this.duration = this.endpoints.item.duration_ms;
-
-        this.playing = this.endpoints.is_playing
-        this.loading = false
-      }).catch(err => {
-        this.error = err
-        this.loading = false
-      })
-
+      this.currentTime = this.media.progress_ms
+      this.duration = this.media.item.duration_ms;
+      this.playing = this.media.is_playing
     },
   }
 }
@@ -75,16 +41,16 @@ export default {
 </script>
 
 <template>
-  <div class="element media" v-if="endpoints">
+  <div class="element media" v-if="media">
     <div class=" w-100">
       <div class="d-flex flex-row align-items-center">
-        <img class="thumbnail" v-bind:src="endpoints.item.album.images[2].url" alt="Album"/>
+        <img class="thumbnail" v-bind:src="media.item.album.images[2].url" alt="Album"/>
         <div class="mx-2 flex-grow-1">
           <div class="lh-1">
-            {{ endpoints.item.name }}
+            {{ media.item.name }}
           </div>
           <div class="text-muted small">
-            {{ endpoints.item.artists[0].name }}
+            {{ media.item.artists[0].name }}
           </div>
 
         </div>

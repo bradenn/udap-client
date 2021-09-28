@@ -6,40 +6,58 @@ export default {
   components: {Dock, Media},
   data() {
     return {
-      loading: false,
-      endpoints: null,
-      date: "",
-      modules: null,
+      connected: false,
+      connecting: false,
       instances: null,
-      error: null,
+      date: "",
       time: {},
     }
   },
   created() {
-
-    this.connection = new WebSocket("wss://localhost:3020/echo")
-
-    console.log(this.connection)
-
-    this.connection.onmessage = function(event) {
-      console.log(event);
-    }
-
-    this.connection.onopen = function(event) {
-      console.log(event)
-      console.log("Successfully connected to the echo websocket server...")
-    }
-
+    this.connect()
     // watch the params of the route to fetch the data again
     this.updateTime();
     this.timer = setInterval(this.updateTime, 1000);
   },
   beforeDestroy() {
+    this.connection.close()
     clearInterval(this.timer)
   },
   methods: {
-
+    connect() {
+      this.connecting = true
+      this.connection = new WebSocket("ws://localhost:3020/ws")
+      this.connection.onmessage = this.onMessage
+      this.connection.onopen = this.onConnect
+      this.connection.onclose = this.onClose
+    },
+    onMessage(event) {
+      this.instances = JSON.parse(event.data)
+    },
+    onConnect(event) {
+      this.enroll()
+      this.connecting = false
+      this.connected = true
+    },
+    onClose(event) {
+      this.connected = false
+      setTimeout(this.connect, 1000)
+    },
+    enroll() {
+      this.connection.send(JSON.stringify({
+            token: this.$JWT,
+            type: "enroll",
+            payload: {
+              instances: ["f43e4cff-ee93-4265-9fc8-018318ae0b50"]
+            }
+          }
+      ));
+    },
     updateTime() {
+      if (this.rcTime > 0 && !this.connected) {
+        this.rcTime -= 1;
+        this.reconnectStatus = "Failed, trying again in " + this.rcTime
+      }
       this.date = Intl.DateTimeFormat(navigator.language, {
         weekday: 'long',
         month: 'long',
@@ -58,8 +76,9 @@ export default {
 
 <template>
   <div class="container terminal">
+
     <div class="row">
-      <div class="col-4 mx-0">
+      <div class="col-4">
         <div class="head">
           <div>
             <span class="clock">{{ time.map(a => (a.type !== "dayPeriod") ? a.value : "").join("") }}</span>
@@ -68,25 +87,31 @@ export default {
             </div>
           </div>
         </div>
-
-
       </div>
-      <div class="col-3 mx-0"></div>
-      <div class="col-5 mx-0">
-        <Media v-if="true"></Media>
-      </div>
-      <div class="row">
 
-        <router-view v-slot="{ Component }">
-          <transition name="fade" mode="out-in">
-            <component :is="Component" />
-          </transition>
-        </router-view>
+      <div class="col-3"></div>
 
+      <div class="col-5">
+        <div class="d-flex justify-content-end">
+          <div class="d-flex align-items-center element status-bar">
+            <i class="bi indicator"
+                 v-bind:class="this.connected ? 'text-success bi-circle-fill ' : this.connecting ? 'text-warning bi-circle-fill ' : 'text-danger bi-circle-fill'"></i>
+          </div>
+        </div>
       </div>
     </div>
-
-
+    <div class="h-100">
+      <div class="row" v-if="connected">
+        <div class="col-12">
+          <div class="element"></div>
+          <router-view v-slot="{ Component }">
+            <transition name="fade" mode="out-in">
+              <component :is="Component"/>
+            </transition>
+          </router-view>
+        </div>
+      </div>
+    </div>
 
     <div class="row">
       <div class="col-12">
@@ -124,6 +149,21 @@ export default {
 .fade-enter-from,
 .fade-leave-to {
   opacity: 0;
+}
+
+.mini {
+  font-size: 12px;
+  line-height: 1em;
+}
+
+.status-bar {
+  height: 10px;
+  width: 18px;
+  padding: 0.5em 4px;
+}
+
+.indicator {
+  font-size: 8px;
 }
 
 .terminal {

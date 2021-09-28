@@ -8,5 +8,11 @@ const app = createApp(Root)
 app.use(router)
 app.mount('#app')
 
-app.config.globalProperties.$JWT = "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYxM2ViMTcxM2JlYmIxZWJlMjFjNjQwMyJ9.6NSXyOUxUAWiGzj78328_sSXb0f0_lE_JA2G5ocnCpH3fBm9imvDS2SgNwLQOlm9bQ6tJ0bnMX3rY_pv_W9-FQ"
+
+app.config.globalProperties.$sessionId = localStorage.getItem('sessionId') || "unset"
+app.config.globalProperties.$setSessionId = (sessionId) => {
+    localStorage.setItem('sessionId', sessionId)
+}
+
+app.config.globalProperties.$host = "http://localhost:3020"
 app.config.globalProperties.$http = axios

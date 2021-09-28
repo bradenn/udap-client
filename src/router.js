@@ -1,15 +1,15 @@
 import {createRouter, createWebHistory} from "vue-router";
-import Endpoints from "./components/Endpoints.vue"
 import Endpoint from "./components/Endpoint.vue"
 import Home from "./components/Home.vue"
 import Tools from "./components/Tools.vue"
 import Terminal from "./components/Terminal.vue";
+import Register from "./components/Register.vue";
 
 const routes = [
     {
         path: '/',
-        name: 'Home',
-        component: Home
+        name: 'Register',
+        component: Register
     },
     {
         path: '/terminal',
@@ -32,18 +32,6 @@ const routes = [
                 component: Endpoint,
             }
         ]
-    },
-    {
-        path: '/endpoints',
-        name: 'Endpoints',
-        component: Endpoints,
-
-    },
-    {
-        path: '/endpoints/:id',
-        name: 'Endpoint',
-        component: Endpoint,
-        params: ['id']
     },
 ]
 

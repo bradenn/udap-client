@@ -2,8 +2,11 @@
 
 
 $theme-colors: (
+        "fog": rgba(255, 255, 255, 0.10),
         "primary": rgb(10, 132, 255),
-        "danger": #ff4136,
+        "danger": rgb(255, 69, 58),
+        "success": rgb(48, 209, 88),
+        "warning": rgb(255, 159, 10),
         "dark": #1e1e1e
 );
 
@@ -18,6 +21,12 @@ $list-group-bg: $card-bg;
 $list-group-color: $body-color;
 $text-muted: darken($body-color, 25);
 $grid-gutter-width: 1em;
+$input-bg: rgba(255, 255, 255, 0.10);
+$input-border-radius: 10px;
+$input-border-color: rgba(255, 255, 255, 0.16);
+$btn-border-radius: 10px;
+
+
 
 @import "../node_modules/bootstrap/scss/bootstrap";
 
@@ -26,7 +35,7 @@ a {
   color: inherit;
 }
 
-.bg-blur{
+.bg-blur {
   background-color: rgba(255, 255, 255, 0.10);
   backdrop-filter: blur(64px);
   border-radius: 1em !important;
