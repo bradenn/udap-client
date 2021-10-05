@@ -7,6 +7,7 @@ export default {
     }
   },
   created() {
+    if(this.$sessionId !== 'undefined') this.$router.push("/terminal")
   },
   methods: {
     register(key) {
@@ -14,7 +15,8 @@ export default {
           .then(this.success).catch(this.rejected)
     },
     success(result) {
-      this.$setSessionId(result.token)
+      this.$setSessionId(result.data.token)
+      this.$router.push("/terminal")
     },
     rejected(result) {
       this.error = result

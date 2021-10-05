@@ -10925,7 +10925,7 @@ a {
 
 .bg-blur {
   background-color: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(64px);
+  backdrop-filter: blur(48px);
   border-radius: 1em !important;
   font-size: 0.88em;
   line-height: 1.5em;
@@ -10945,7 +10945,7 @@ a:active {
   color: inherit;
 }
 
-.router-link-exact-active.icon {
+.router-link-active.icon {
   text-decoration: none;
   color: inherit;
   background-color: #0d6efd;
@@ -10953,14 +10953,34 @@ a:active {
 
 .list-group-item {
   background-color: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(64px);
+  backdrop-filter: blur(48px);
   border-radius: 10px !important;
   margin-bottom: 8px;
   border: none !important;
 }
 
+.dropdown-menu {
+  padding: 0.5em 0.5em;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12), 0 8px 24px rgba(0, 0, 0, 0.11);
+  background-color: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(48px);
+}
+
+.dropdown-item {
+  padding: 0.125em 0.5em;
+  color: #bfbfbf;
+}
+
 .list-group-item:last-of-type {
   margin-bottom: 0;
+}
+
+.dropdown-header {
+  padding: 0.125em 0.25em;
+  color: #FFF;
+  font-weight: 700;
 }
 
 .element {
@@ -10969,7 +10989,7 @@ a:active {
   border: 1px solid rgba(255, 255, 255, 0.16);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12), 0 8px 24px rgba(0, 0, 0, 0.11);
   background-color: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(64px);
+  backdrop-filter: blur(48px);
 }
 
 /*# sourceMappingURL=custom.css.map */

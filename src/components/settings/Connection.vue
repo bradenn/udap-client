@@ -3,6 +3,7 @@
 export default {
   data() {
     return {
+
     }
   },
   created() {
@@ -15,9 +16,10 @@ export default {
 </script>
 
 <template>
- <div>
-   <div class="weather"><i class="bi bi-brightness-high-fill"></i> 76°</div>
- </div>
+    <div class="element px-3">
+      <h5 class="mb-1">Connection</h5>
+
+    </div>
 </template>
 
 <style scoped>

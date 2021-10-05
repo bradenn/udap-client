@@ -7,14 +7,15 @@ export default {
     }
   },
   props: {
-    multiline: Boolean
+    multiline: Boolean,
+    small: Boolean
   }
 }
 
 </script>
 
 <template>
-  <div class="dock" v-bind:class="multiline?'multiline':''">
+  <div class="dock" v-bind:class="multiline?'multiline':small?'sm':''">
     <slot></slot>
   </div>
 </template>
@@ -30,6 +31,37 @@ export default {
   font-size: 16px;
   padding: 0.25em 0.5em;
 }
+
+.sm > .icon {
+  padding: 0.125em 0.25em;
+}
+
+.sm {
+  height: 42px !important;
+}
+
+.text.router-link-exact-active {
+  background-color: var(--bs-primary);
+  color: var(--bs-gray-100);
+}
+
+.text {
+  min-height: 32px;
+  flex: 1 1 auto;
+  height: 100%;
+  border-radius: 12px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: Roboto, sans-serif;
+  line-height: 1em;
+  font-weight: 400;
+  font-size: 16px;
+  color: var(--bs-gray-500);
+  /*border: 1px solid rgba(255, 255, 255, 0.16);*/
+  transition: scale 2s;
+}
+
 
 .icon {
   min-height: 58px;
@@ -50,6 +82,11 @@ export default {
 .multiline {
   flex-wrap: wrap;
   height: auto !important;
+}
+
+.dock.sm {
+  padding: 0.5em 0.25em;
+  transition: opacity 2s;
 }
 
 .dock {

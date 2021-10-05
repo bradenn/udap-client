@@ -10,7 +10,8 @@
     "axios": "^0.21.3",
     "bootstrap": "^5.1.0",
     "vue": "^3.2.6",
-    "vue-router": "4"
+    "vue-router": "4",
+    "vue3-draggable": "^2.0.9"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^1.6.0",

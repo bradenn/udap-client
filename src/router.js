@@ -4,6 +4,10 @@ import Home from "./components/Home.vue"
 import Tools from "./components/Tools.vue"
 import Terminal from "./components/Terminal.vue";
 import Register from "./components/Register.vue";
+import Settings from "./components/Settings.vue";
+import Config from "./components/settings/Config.vue";
+import General from "./components/settings/General.vue";
+import Connection from "./components/settings/Connection.vue";
 
 const routes = [
     {
@@ -14,10 +18,11 @@ const routes = [
     {
         path: '/terminal',
         name: 'Terminal',
+        redirect: '/terminal/home',
         component: Terminal,
         children: [
             {
-                path: '/terminal',
+                path: '/terminal/home',
                 name: 'Home',
                 component: Home,
             },
@@ -29,7 +34,25 @@ const routes = [
             {
                 path: '/terminal/settings',
                 name: 'Settings',
-                component: Endpoint,
+                redirect: '/terminal/settings/general',
+                component: Settings,
+                children: [
+                    {
+                        path: '/terminal/settings/general',
+                        name: 'General',
+                        component: General,
+                    },
+                    {
+                        path: '/terminal/settings/config',
+                        name: 'Config',
+                        component: Config,
+                    },
+                    {
+                        path: '/terminal/settings/connection',
+                        name: 'Connection',
+                        component: Connection,
+                    }
+                ]
             }
         ]
     },
