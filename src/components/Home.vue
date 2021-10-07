@@ -15,18 +15,21 @@ export default {
   },
   beforeDestroy() {
   },
-  methods: {
-
-  },
+  methods: {},
 }
 </script>
 
 <template>
   <div>
     <WeatherWidget v-bind:class="this.$route.name === 'Settings'?'hidden':''"></WeatherWidget>
-    <div v-for="(v, k) in this.$root.instances" >
-      <Media v-if="k === 'd9f696ca-d94a-47bb-b6fc-e2b1b81e319e'" v-bind:media="JSON.parse(v)" v-bind:data="JSON.parse(v)" v-bind:class="this.$route.name === 'Settings'?'hidden':''"></Media>
-      <Downup v-if="k === 'f43e4cff-ee93-4265-9fc8-018318ae0b50'" v-bind:data="JSON.parse(v)" v-bind:class="this.$route.name === 'Settings'?'hidden':''"></Downup>
+    <div class="row mt-2">
+      <div v-for="(v, k) in this.$root.instances" class="mb-3">
+        <Media v-if="k === 'd9f696ca-d94a-47bb-b6fc-e2b1b81e319e'"
+               v-bind:media="v!==''?JSON.parse(v):{error: true}"
+               v-bind:class="this.$route.name === 'Settings'?'hidden':''"></Media>
+        <Downup v-if="k === 'f43e4cff-ee93-4265-9fc8-018318ae0b50'" v-bind:data="JSON.parse(v)"
+                v-bind:class="this.$route.name === 'Settings'?'hidden':''"></Downup>
+      </div>
     </div>
   </div>
 </template>

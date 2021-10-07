@@ -9,7 +9,6 @@ export default {
     }
   },
   created() {
-    console.log()
   },
   methods: {
 
@@ -22,7 +21,6 @@ export default {
     <div class="row">
       <div class="col-12">
         <Dock small class="mb-3">
-
           <router-link v-for="page in this.$route.matched[1].children" class="text" v-bind:to="page.path">
             {{page.name}}
           </router-link>

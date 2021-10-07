@@ -24,10 +24,17 @@ $grid-gutter-width: 1em;
 $input-bg: rgba(255, 255, 255, 0.10);
 $input-border-radius: 10px;
 $input-border-color: rgba(255, 255, 255, 0.16);
-$btn-border-radius: 10px;
+$btn-border-radius: 12px;
 $blur: blur(48px);
 
 
+$foreground-color: rgba(255, 255, 255, 0.10);
+$foreground-border-color: rgba(255, 255, 255, 0.16);
+
+/*.element {
+  border: 1px solid darken($foreground-color, 10%) !important;
+  background-color: darken($foreground-border-color, 55%) !important;
+}*/
 
 @import "../node_modules/bootstrap/scss/bootstrap";
 
@@ -62,6 +69,14 @@ a:active {
   text-decoration: none;
   color: inherit;
   background-color: $primary;
+}
+
+.icon:hover {
+  color: inherit;
+}
+
+.text:hover {
+  color: inherit;
 }
 
 .list-group-item {

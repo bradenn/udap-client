@@ -43,7 +43,6 @@ export default {
 
       <div class="col-5">
         <StatusWidget></StatusWidget>
-
       </div>
     </div>
     <div class="h-100">
@@ -69,12 +68,12 @@ export default {
           <router-link class="icon" to="/terminal/tools">
             <i class="bi bi-calculator-fill"></i>
           </router-link>
-          <div class="icon">
+<!--          <div class="icon">
             <i class="bi bi-shield-shaded"></i>
           </div>
           <div class="icon">
             <i class="bi bi-lightning-charge-fill"></i>
-          </div>
+          </div>-->
           <router-link class="icon" to="/terminal/settings">
             <i class="bi bi-gear-fill"></i>
           </router-link>

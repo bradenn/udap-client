@@ -20,11 +20,15 @@ export default {
       connectedSince: new Date(),
       backgroundImg: "",
       instances: {},
-      metadata: {},
+      metadata: null,
     }
 
   },
-  watch: {},
+  watch: {
+    '$instances'() {
+      this.enroll()
+    }
+  },
   created: function() {
     this.connect()
     this.getBg()
@@ -50,6 +54,7 @@ export default {
     },
     onMessage(event) {
       let data = JSON.parse(event.data)
+      if(!data) console.log("Invalid JSON recieved")
       switch (data.type) {
         case "poll":
           this.instances = data.payload
@@ -76,7 +81,7 @@ export default {
             token: this.$sessionId,
             type: "enroll",
             payload: {
-              instances: ["f43e4cff-ee93-4265-9fc8-018318ae0b50", "d9f696ca-d94a-47bb-b6fc-e2b1b81e319e"]
+              instances: this.$instances
             }
           }
       ));

@@ -39,7 +39,7 @@ export default {
         <div class="dropdown-item small"><span class="fw-menu-item">Uptime</span>{{ uptime }}</div>
         <div class="dropdown-header">Metadata</div>
 
-        <div  v-if="this.$root.metadata.endpoint">
+        <div  v-if="this.$root.metadata !== null">
           <div class="dropdown-item small"><span class="fw-menu-item">Name</span>{{ this.$root.metadata.endpoint.name }}</div>
         <div class="dropdown-item small"><span class="fw-menu-item">UUID</span><span class="short-string">{{ this.$root.endpointId }}</span></div>
         </div>

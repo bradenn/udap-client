@@ -17,7 +17,7 @@ export default {
   },
   watch: {
     media: function (a, b) {
-      this.getPlaying()
+      if (!this.media.error) this.getPlaying()
     }
   },
   methods: {
@@ -41,35 +41,36 @@ export default {
 </script>
 
 <template>
-  <div class="element media" v-if="media">
-    <div class=" w-100">
-      <div class="d-flex flex-row align-items-center">
-        <img class="thumbnail" v-bind:src="media.item.album.images[2].url" alt="Album"/>
-        <div class="mx-2 flex-grow-1">
-          <div class="lh-1">
-            {{ media.item.name }}
-          </div>
-          <div class="text-muted small">
-            {{ media.item.artists[0].name }}
-          </div>
+  <div class="col-8">
+    <div class="element media" v-if="!media.error">
+      <div>
+        <div class="d-flex flex-row align-items-center">
+          <img class="thumbnail" v-bind:src="media.item.album.images[2].url" alt="Album"/>
+          <div class="mx-2 flex-grow-1">
+            <div class="lh-1">
+              {{ media.item.name }}
+            </div>
+            <div class="text-muted small">
+              {{ media.item.artists[0].name }}
+            </div>
 
+          </div>
         </div>
       </div>
-    </div>
-    <div class="seek small my-3">
-      <div class="seek" v-bind:style="`width:${durationPercent()*100}%`"></div>
-      <div class="d-flex justify-content-between small">
-        <div>{{ readTime(this.currentTime) }}</div>
-        <div>{{ readTime(this.duration) }}</div>
+      <div class="seek small my-3">
+        <div class="seek" v-bind:style="`width:${durationPercent()*100}%`"></div>
+        <div class="d-flex justify-content-between small">
+          <div>{{ readTime(this.currentTime) }}</div>
+          <div>{{ readTime(this.duration) }}</div>
+        </div>
+      </div>
+      <div class="controls">
+        <i class="bi bi-skip-start-fill"></i>
+        <i class="bi play" v-bind:class="this.playing?' bi-pause-fill':' bi-play-fill'" v-on:click="togglePlay"></i>
+        <i class="bi bi-skip-end-fill"></i>
       </div>
     </div>
-    <div class="controls">
-      <i class="bi bi-skip-start-fill"></i>
-      <i class="bi play" v-bind:class="this.playing?' bi-pause-fill':' bi-play-fill'" v-on:click="togglePlay"></i>
-      <i class="bi bi-skip-end-fill"></i>
-    </div>
   </div>
-
 </template>
 
 <style>
@@ -78,6 +79,7 @@ export default {
   font-size: 3em !important;
   line-height: 1em;
 }
+
 .icon > .bi {
   text-shadow: 0 0 8px rgba(0, 0, 0, 0.125);
 }

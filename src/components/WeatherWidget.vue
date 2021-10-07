@@ -12,7 +12,7 @@ export default {
 </script>
 
 <template>
-  <div>
+  <div class="col-4">
     <div class="weather element">
       <div>
         <i class="bi bi-brightness-high-fill"></i>

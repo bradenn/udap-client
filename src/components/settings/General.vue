@@ -3,6 +3,7 @@
 export default {
   data() {
     return {
+      loaded: false,
       backgrounds: ["viridian", "neonorange", "deepred", "painfulpurple"],
       background: "viridian"
     }
@@ -13,9 +14,10 @@ export default {
   methods: {
     getBackground() {
       this.background = this.$root.getBackground()
+      this.loaded = true
     },
     previewBackground(name) {
-      return `background-image: url('/public/custom/${name}.png')`
+      return `background-image: url('/custom/${name}.png')`
     },
     setBackground(name) {
       this.$root.setBackground(name)
@@ -28,7 +30,7 @@ export default {
 <template>
     <div class="element px-3">
       <h5 class="mb-1 mt-1">Background</h5>
-      <div class="gallery my-2">
+      <div class="gallery my-2" v-if="loaded">
         <div v-for="option in backgrounds" class="bg-preview"
              v-bind:class="this.background === option?'bg-active':''" v-on:click="setBackground(option)"
              v-bind:style="previewBackground(option)"><span v-if="this.background === option">CURRENT</span></div>
