@@ -6,6 +6,7 @@
     "build": "vite build",
     "serve": "vite preview"
   },
+  "license": "none",
   "dependencies": {
     "axios": "^0.21.3",
     "bootstrap": "^5.1.0",
