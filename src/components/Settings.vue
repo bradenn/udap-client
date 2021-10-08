@@ -1,5 +1,5 @@
 <script>
-import Dock from "./Dock.vue";
+import Dock from "./partials/Dock.vue";
 
 export default {
   components: {Dock},

@@ -30,7 +30,7 @@ export default {
     }
   },
   created: function() {
-    this.connect()
+
     this.getBg()
   },
   beforeUnmount() {

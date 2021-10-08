@@ -1,7 +1,7 @@
 <script>
-import Dock from "./Dock.vue";
-import Media from "./Media.vue";
-import StatusWidget from "./StatusWidget.vue";
+import Dock from "./partials/Dock.vue";
+import Media from "./modules/Media.vue";
+import StatusWidget from "./core/StatusWidget.vue";
 import Clock from "./core/Clock.vue";
 
 export default {
@@ -17,6 +17,7 @@ export default {
     }
   },
   created() {
+    this.$root.connect()
     this.updateScale()
   },
   methods: {

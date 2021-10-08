@@ -1,7 +1,7 @@
 <script>
-import WeatherWidget from "./WeatherWidget.vue";
+import WeatherWidget from "./core/WeatherWidget.vue";
 import Downup from "./modules/Downup.vue";
-import Media from "./Media.vue";
+import Media from "./modules/Media.vue";
 
 export default {
   components: {WeatherWidget, Downup, Media},

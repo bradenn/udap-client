@@ -1,5 +1,4 @@
 import {createRouter, createWebHistory} from "vue-router";
-import Endpoint from "./components/Endpoint.vue"
 import Home from "./components/Home.vue"
 import Tools from "./components/Tools.vue"
 import Terminal from "./components/Terminal.vue";
@@ -8,12 +7,18 @@ import Settings from "./components/Settings.vue";
 import Config from "./components/settings/Config.vue";
 import General from "./components/settings/General.vue";
 import Connection from "./components/settings/Connection.vue";
+import Diagnostic from "./components/Diagnostic.vue";
 
 const routes = [
     {
         path: '/',
         name: 'Register',
         component: Register
+    },
+    {
+        path: '/diagnostic',
+        name: 'Diagnostic',
+        component: Diagnostic
     },
     {
         path: '/terminal',
