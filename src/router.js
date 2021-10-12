@@ -1,6 +1,6 @@
 import {createRouter, createWebHistory} from "vue-router";
 import Home from "./components/Home.vue"
-import Tools from "./components/Tools.vue"
+import Apps from "./components/Apps.vue"
 import Terminal from "./components/Terminal.vue";
 import Register from "./components/Register.vue";
 import Settings from "./components/Settings.vue";
@@ -32,9 +32,9 @@ const routes = [
                 component: Home,
             },
             {
-                path: '/terminal/tools',
-                name: 'Tools',
-                component: Tools,
+                path: '/terminal/apps',
+                name: 'Apps',
+                component: Apps,
             },
             {
                 path: '/terminal/settings',

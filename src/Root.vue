@@ -19,24 +19,35 @@ export default {
       endpointId: "",
       connectedSince: new Date(),
       backgroundImg: "",
+      dark: true,
       instances: {},
       metadata: null,
+      uptime: "",
+      accent: "accent-blue",
     }
 
   },
   watch: {
     '$instances'() {
       this.enroll()
+    },
+    connected() {
+      this.parseUptime()
     }
   },
-  created: function() {
-
+  created: function () {
     this.getBg()
   },
   beforeUnmount() {
     this.disconnect()
   },
   methods: {
+    setTheme(bool){
+      this.dark = bool;
+    },
+    parseUptime() {
+      this.uptime = this.$timeSince(this.$root.connectedSince.getTime())
+    },
     connect() {
       this.connecting = true
       this.connection = new WebSocket(`ws://${this.$host}/ws`)
@@ -54,7 +65,7 @@ export default {
     },
     onMessage(event) {
       let data = JSON.parse(event.data)
-      if(!data) console.log("Invalid JSON recieved")
+      if (!data) console.log("Invalid JSON recieved")
       switch (data.type) {
         case "poll":
           this.instances = data.payload
@@ -68,6 +79,7 @@ export default {
     onClose(event) {
       this.connected = false
       this.connecting = false
+      this.connectedSince = new Date()
       setTimeout(this.connect, 5000)
     },
     disconnect() {
@@ -82,6 +94,27 @@ export default {
             type: "enroll",
             payload: {
               instances: this.$instances
+            }
+          }
+      ));
+    },
+    sendAction(instanceId, action) {
+      this.connection.send(JSON.stringify({
+            token: this.$sessionId,
+            type: "action",
+            payload: {
+              instance: instanceId,
+              action: action
+            }
+          }
+      ));
+    },
+    sendReset(instanceId) {
+      this.connection.send(JSON.stringify({
+            token: this.$sessionId,
+            type: "reset",
+            payload: {
+              instance: instanceId
             }
           }
       ));
@@ -112,7 +145,7 @@ export default {
 </script>
 
 <template>
-  <div class="root">
+  <div class="root" v-bind:class="`${dark?'theme-dark':'theme-light'} ${accent}`">
     <img class="backdrop" :src="backgroundImg" :key="backgroundImg" alt="Background"/>
     <router-view class="pt-4"/>
   </div>
@@ -125,6 +158,7 @@ export default {
   height: 100vh;
   overflow: hidden;
 }
+
 
 .backdrop {
   z-index: -1;

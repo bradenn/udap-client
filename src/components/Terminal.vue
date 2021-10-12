@@ -64,19 +64,19 @@ export default {
       <div class="col-12">
         <Dock>
           <router-link class="icon" to="/terminal/home">
-            <i class="bi bi-lightbulb-fill"></i>
+            <i class="bi bi-house"></i>
           </router-link>
-          <router-link class="icon" to="/terminal/tools">
-            <i class="bi bi-calculator-fill"></i>
+          <router-link class="icon" to="/terminal/apps">
+            <i class="bi bi-grid-3x3-gap"></i>
           </router-link>
-<!--          <div class="icon">
-            <i class="bi bi-shield-shaded"></i>
-          </div>
-          <div class="icon">
-            <i class="bi bi-lightning-charge-fill"></i>
-          </div>-->
+          <!--          <div class="icon">
+                      <i class="bi bi-shield-shaded"></i>
+                    </div>
+                    <div class="icon">
+                      <i class="bi bi-lightning-charge-fill"></i>
+                    </div>-->
           <router-link class="icon" to="/terminal/settings">
-            <i class="bi bi-gear-fill"></i>
+            <i class="bi bi-gear"></i>
           </router-link>
         </Dock>
       </div>

@@ -5,6 +5,7 @@ export default {
     return {}
   },
   props: {
+    name: String,
     data: Object
   },
   created() {
@@ -15,14 +16,13 @@ export default {
 </script>
 
 <template>
-  <div class="col-4">
+  <div class="mb-2">
     <div class="element px-2 d-inline-block">
       <div class="mx-2">
         <div class="d-flex align-items-center">
           <i class="bi indicator "
              v-bind:class="data.status === '200 OK' ? 'text-success bi-circle-fill ' : 'text-danger bi-circle-fill'"></i>
-
-          <span>{{ data.url.replace("https://", "") }}</span>
+          <span>{{name}}</span>
         </div>
       </div>
     </div>

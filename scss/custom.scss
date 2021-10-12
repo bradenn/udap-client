@@ -10,9 +10,24 @@ $theme-colors: (
         "dark": #1e1e1e
 );
 
+$accents: (
+        "blue": darken(rgb(10, 132, 255), 10%),
+        "red": rgb(255, 69, 58, 0.9),
+        "green": darken(rgb(48, 209, 88), 10%),
+        "orange": darken(rgb(255, 159, 10, 0.9), 10%),
+);
+
 html {
   font-family: Roboto, serif;
 }
+
+* {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+$fg: rgba(255, 255, 255, 0.12);
+$border-color: rgba(255, 255, 255, 0.16);
 
 $body-bg: #121212;
 $body-color: #FFF;
@@ -26,15 +41,71 @@ $input-border-radius: 10px;
 $input-border-color: rgba(255, 255, 255, 0.16);
 $btn-border-radius: 12px;
 $blur: blur(48px);
+$border-radius: 12px;
+
+$modal-content-border-color: $border-color;
+$modal-content-bg: $fg;
+$modal-content-border-radius: $border-radius;
+$modal-backdrop-opacity: 0;
+
+.theme-dark {
+  .element {
+    padding: 0.5em 0.5em;
+    border-radius: 16px;
+    border: 1px solid darken($border-color, 10%);
+    background-color: darken($fg, 60%);
+    backdrop-filter: $blur;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12), 0 8px 24px rgba(0, 0, 0, 0.11);
+    transition: background-color 100ms ease;
+  }
+}
+
+.theme-light {
+  .element {
+    padding: 0.5em 0.5em;
+    border-radius: 16px;
+    border: 1px solid $border-color;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12), 0 8px 24px rgba(0, 0, 0, 0.11);
+    background-color: $fg;
+    backdrop-filter: $blur;
+    transition: background-color 100ms ease;
+  }
+}
 
 
-$foreground-color: rgba(255, 255, 255, 0.10);
-$foreground-border-color: rgba(255, 255, 255, 0.16);
+@each $clr, $i in $accents {
+  .accent-#{$clr} {
+    .active {
+      background-color: $i;
+    }
+    .router-link-exact-active {
+      background-color: $i;
+    }
 
-/*.element {
-  border: 1px solid darken($foreground-color, 10%) !important;
-  background-color: darken($foreground-border-color, 55%) !important;
-}*/
+    .router-link-active {
+      background-color: $i !important;
+
+    }
+  }
+
+}
+
+.modal {
+  backdrop-filter: $blur;
+}
+
+.btn-fog:focus {
+  background: rgba(255, 255, 255, 0.10) !important;
+}
+
+.btn-fog:hover {
+  background: rgba(255, 255, 255, 0.10) !important;
+}
+
+.btn-fog:active {
+  background: rgba(255, 255, 255, 0.10) !important;
+}
+
 
 @import "../node_modules/bootstrap/scss/bootstrap";
 
@@ -111,14 +182,6 @@ a:active {
   font-weight: 700;
 }
 
-.element {
-  padding: 0.5em 0.5em;
-  border-radius: 16px;
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12), 0 8px 24px rgba(0, 0, 0, 0.11);
-  background-color: rgba(255, 255, 255, 0.10);
-  backdrop-filter: $blur;
-}
 
 
 

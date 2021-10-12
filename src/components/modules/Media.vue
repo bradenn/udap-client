@@ -11,6 +11,7 @@ export default {
   },
   props: {
     media: Object,
+    meta: Object,
     multiline: Boolean
   },
   created() {
@@ -23,6 +24,16 @@ export default {
   methods: {
     durationPercent() {
       return this.currentTime / this.duration
+    },
+    play() {
+      this.$root.sendAction(this.meta.id, "play")
+    },
+    pause() {
+      this.$root.sendAction(this.meta.id, "pause")
+    },
+    togglePlay() {
+      this.playing?this.pause():this.play();
+      this.playing = !this.playing;
     },
     readTime(ms) {
       let a = ms / 1000;
@@ -41,7 +52,7 @@ export default {
 </script>
 
 <template>
-  <div class="col-8">
+  <div class="col-6 mb-2">
     <div class="element media" v-if="!media.error">
       <div>
         <div class="d-flex flex-row align-items-center">

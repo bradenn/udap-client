@@ -15,7 +15,7 @@ export default {
 </script>
 
 <template>
-  <div class="dock" v-bind:class="multiline?'multiline':small?'sm':''">
+  <div class="dock element" v-bind:class="multiline?'multiline':small?'sm':''">
     <slot></slot>
   </div>
 </template>
@@ -85,7 +85,7 @@ export default {
 }
 
 .dock.sm {
-  padding: 0.5em 0.25em;
+  padding: 0.5em 0.25em !important;
   transition: opacity 2s;
 }
 
@@ -98,10 +98,6 @@ export default {
   height: 76px;
   padding: 0.5em 0.5em;
   border-radius: 16px;
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12), 0 8px 24px rgba(0, 0, 0, 0.11);
-  background-color: rgba(255, 255, 255, 0.10);
-  backdrop-filter: blur(64px);
   opacity: 1;
   gap: 0.5em;
 }

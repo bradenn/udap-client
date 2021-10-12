@@ -16,7 +16,7 @@ export default {
 
 <template>
  <div>
-   Tools
+   Apps
  </div>
 </template>
 
