@@ -4,32 +4,14 @@ export default {
   data() {
     return {
       loaded: false,
-      backgrounds: ["viridian", "painfulpurple"],
-      background: "viridian",
+      backgrounds: ["viridian", "painfulpurple", "dark2", "dark3"],
       colors: [
-        {name: "Blue", cls: "accent-blue"}, {name: "Green", cls: "accent-green"}, {
-          name: "Orange",
-          cls: "accent-orange"
-        },
-        {name: "Red", cls: "accent-red"}],
+        {name: "Slate", cls: "accent-slate"},
+        {name: "Blue", cls: "accent-blue"},
+        {name: "Orange", cls: "accent-orange"}],
     }
   },
-  created() {
-    this.getBackground()
-  },
-  methods: {
-    getBackground() {
-      this.background = this.$root.getBackground()
-      this.loaded = true
-    },
-    previewBackground(name) {
-      return `background-image: url('/custom/${name}.png')`
-    },
-    setBackground(name) {
-      this.$root.setBackground(name)
-      this.getBackground()
-    }
-  },
+  methods: {},
 }
 </script>
 
@@ -37,48 +19,54 @@ export default {
   <div class="element px-3 mb-3">
     <div class=" d-flex justify-content-between mb-3">
       <div>
-        <h5 class="mb-0 mt-1">Terminal Appearance</h5>
+        <h5 class="mb-0 mt-1">Endpoint</h5>
         <span class="text-muted small mt-0">Modify this terminal's apearance.</span>
       </div>
     </div>
-    <div class="row mb-2">
+    <div v-if="this.$root.preferences" class="row mb-2">
       <div class="col-sm-4 ">
         <h6 class="">Background</h6>
       </div>
       <div class="col-sm-8">
-        <div class="gallery my-2" v-if="loaded">
+        <div class="gallery my-2">
           <div v-for="option in backgrounds" class="bg-preview"
-               v-bind:class="this.background === option?'bg-active':''" v-on:click="setBackground(option)"
-               v-bind:style="previewBackground(option)"><span v-if="this.background === option">CURRENT</span></div>
+               v-bind:class="this.$root.preferences.background === option?'bg-active':''"
+               v-bind:style="`background-image: url('/custom/${option}.png')`"
+               v-on:click="this.$root.preferences.background = option"><span
+              v-if="this.$root.preferences.background === option">CURRENT</span></div>
         </div>
       </div>
     </div>
+    <hr>
     <div class="row mb-2">
       <div class="col-sm-4 ">
         <h6 class="">Material Theme</h6>
       </div>
       <div class="col-sm-8">
         <div class="gallery my-2">
-          <div class="element selector" v-bind:class="this.$root.dark?'active':''"
-               v-on:click="this.$root.setTheme(true)">
+          <a class="element selector" href="#" v-bind:class="this.$root.preferences.theme === 'dark'?'active':''"
+             v-on:click="this.$root.preferences.theme = 'dark'">
             Dark
-          </div>
-          <div class="element selector" v-bind:class="!this.$root.dark?'active':''"
-               v-on:click="this.$root.setTheme(false)">
+          </a>
+          <a class="element selector" href="#" v-bind:class="this.$root.preferences.theme !== 'dark'?'active':''"
+             v-on:click="this.$root.preferences.theme = 'light'">
             Light
-          </div>
+          </a>
         </div>
       </div>
     </div>
+    <hr>
     <div class="row mb-2">
       <div class="col-sm-4 ">
         <h6 class="">Accent Color</h6>
       </div>
       <div class="col-sm-8">
         <div class="gallery my-2">
-          <div class="element selector" v-for="color in colors" v-on:click="this.$root.accent = color.cls" v-bind:class="this.$root.accent === color.cls ? 'active':''">
+          <a v-for="color in colors" class="element selector" href="#"
+             v-bind:class="this.$root.preferences.accent === color.cls ? 'active':''"
+             v-on:click="this.$root.preferences.accent = color.cls">
             {{ color.name }}
-          </div>
+          </a>
         </div>
       </div>
     </div>
@@ -91,11 +79,15 @@ export default {
   gap: 0.5em;
 }
 
+.selector.active {
+  border-color: rgba(255, 255, 255, 0.9) !important;
+}
+
 .selector {
   font-size: 12px;
   font-weight: 700;
   border-radius: 10px !important;
-  line-height: 1.2em;
+  line-height: 2em;
   width: 22.5%;
   padding: 0.25em 0.1em;
   text-align: center;
@@ -107,6 +99,7 @@ export default {
   display: flex;
   column-gap: 1em;
 }
+/*
 
 .text-icon {
   min-height: 12px;
@@ -117,7 +110,7 @@ export default {
   justify-content: center;
   align-items: center;
   font-size: 16px;
-  /*border: 1px solid rgba(255, 255, 255, 0.16);*/
+  !*border: 1px solid rgba(255, 255, 255, 0.16);*!
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
   background-color: rgba(255, 255, 255, 0.10);
   backdrop-filter: blur(64px);
@@ -133,12 +126,13 @@ export default {
   justify-content: center;
   align-items: center;
   font-size: 16px;
-  /*border: 1px solid rgba(255, 255, 255, 0.16);*/
+  !*border: 1px solid rgba(255, 255, 255, 0.16);*!
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
   background-color: rgba(255, 255, 255, 0.10);
   backdrop-filter: blur(64px);
   transition: scale 2s;
 }
+*/
 
 .bg-active {
   display: flex;
@@ -156,7 +150,7 @@ export default {
   background-repeat: no-repeat;
   background-size: 101%;
   aspect-ratio: 1/1.41;
-  width: 25%;
+  width: 16%;
   border-radius: 10px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12), 0 8px 24px rgba(0, 0, 0, 0.11);
 }

@@ -16,22 +16,27 @@ export default {
 </script>
 
 <template>
-  <div class="mb-2">
-    <div class="element px-2 d-inline-block">
-      <div class="mx-2">
-        <div class="d-flex align-items-center">
-          <i class="bi indicator "
-             v-bind:class="data.status === '200 OK' ? 'text-success bi-circle-fill ' : 'text-danger bi-circle-fill'"></i>
-          <span>{{name}}</span>
-        </div>
+  <div class="mb-2 widget-sm element d-flex justify-content-between flex-column">
+    <div class="d-flex justify-content-start">
+      <div>
+        <i class="bi indicator " v-bind:class="data.status === '200 OK' ? 'text-success bi-check-lg ' : 'text-danger bi-circle-fill'"></i>
+      </div>
+      <div>
+        <span class="">{{ name }}</span>
       </div>
     </div>
+
+    <span class="text-muted small">{{ data.status }}</span>
   </div>
 </template>
 
 <style scoped>
+
 .indicator {
-  font-size: 0.55em;
-  margin-right: 1em;
+  margin-top: 0.5em;
+  font-size: 1em;
+  line-height: 1em;
+  margin-right: 0.5em;
+
 }
 </style>

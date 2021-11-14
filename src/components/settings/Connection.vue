@@ -9,7 +9,7 @@ export default {
   },
   methods: {
     updateStatistics() {
-      this.$root.parseUptime()
+
     }
   },
 }
@@ -28,7 +28,7 @@ export default {
 
         </div>
         <div class="col-sm-8">
-          <input type="text" class="form-control" v-model="this.$host" id="hostAddress">
+          <input type="text" class="form-control" v-model="this.$root.config.host" id="hostAddress">
           <div class="text-muted small mt-0">Changing this may interrupt this endpoint connection.</div>
         </div>
       </div>
@@ -44,7 +44,7 @@ export default {
         <label for="hostAddress" class="">Connection State</label>
       </div>
       <div class="col-sm-8">
-        <div v-bind:class="this.$root.connected ? 'text-success' : this.$root.connecting ? 'text-warning' : 'text-danger'">{{this.$root.connected ? 'Connected' : this.$root.connecting ? 'Connecting' : 'Disconnected'}}</div>
+        <div v-bind:class="this.$root.connection.connected ? 'text-success' : this.$root.connection.connecting ? 'text-warning' : 'text-danger'">{{this.$root.connection.connected ? 'Connected' : this.$root.connection.connecting ? 'Connecting' : 'Disconnected'}}</div>
       </div>
     </div>
     <div class="row mb-2">
@@ -52,15 +52,15 @@ export default {
         <label for="hostAddress" class="">Enrolled</label>
       </div>
       <div class="col-sm-8">
-        <div>{{this.$root.metadata !== null && this.$root.connected ? "Yes" : "No"}}</div>
+        <div>{{this.$root.session.metadata !== null && this.$root.connection.connected ? "Yes" : "No"}}</div>
       </div>
     </div>
     <div class="row mb-2">
       <div class="col-sm-4">
-        <label for="hostAddress" class="">{{this.$root.connected?"Uptime":"Downtime"}}</label>
+        <label for="hostAddress" class="">{{this.$root.connection.connected?"Uptime":"Downtime"}}</label>
       </div>
       <div class="col-sm-8">
-        <div>{{this.$root.uptime}}</div>
+
       </div>
     </div>
   </div>
@@ -74,7 +74,7 @@ export default {
         <label for="hostAddress" class="">UUID</label>
       </div>
       <div class="col-sm-8">
-        <div>{{this.$root.metadata.endpoint.id}}</div>
+        <div>{{this.$root.session.metadata.endpoint.id}}</div>
       </div>
     </div>
     <div class="row mb-2">
@@ -82,7 +82,7 @@ export default {
         <label for="hostAddress" class="">Name</label>
       </div>
       <div class="col-sm-8">
-        <div>{{this.$root.metadata.endpoint.name}}</div>
+        <div>{{this.$root.session.metadata.endpoint.name}}</div>
       </div>
     </div>
     <div class="row mb-2">
@@ -90,7 +90,7 @@ export default {
         <label for="hostAddress" class="">Subscriptions</label>
       </div>
       <div class="col-sm-8">
-        <div>{{this.$root.metadata.endpoint.instances.length}}</div>
+        <div>{{this.$root.session.metadata.endpoint.instances.length}}</div>
       </div>
     </div>
   </div>

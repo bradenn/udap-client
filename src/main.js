@@ -1,25 +1,35 @@
-import {createApp} from 'vue'
+import {createApp, reactive} from 'vue'
 import router from './router'
 import Root from './Root.vue'
 import axios from 'axios';
 
 const app = createApp(Root)
 
-
-app.config.globalProperties.$host = localStorage.getItem('host') || "localhost:3020"
-app.config.globalProperties.$setSessionId = (sessionId) => {
-    localStorage.setItem('host', sessionId)
+let preferences = {
+    connection: {
+        connected: false,
+        connecting: false,
+        websocket: undefined
+    },
+    preferences: {
+        theme: "dark",
+        accent: "blue",
+        background: "viridian"
+    },
+    config: {
+        host: "localhost",
+        port: 3020,
+    },
+    session: {
+        token: "",
+        endpoint: {},
+        instances: [],
+        metadata: {}
+    }
 }
-app.config.globalProperties.$sessionId = localStorage.getItem('sessionId') || "unset"
-app.config.globalProperties.$setSessionId = (sessionId) => {
-    localStorage.setItem('sessionId', sessionId)
-}
 
-
-let configDefault = {
-    endpointId: "",
-    instances: [],
-    background: "",
+if (!localStorage.getItem('context')) {
+    localStorage.setItem('context', JSON.stringify(preferences))
 }
 
 app.config.globalProperties.$timeSince = function (date) {

@@ -1,5 +1,4 @@
 <script>
-
 function parseJwt(token) {
   let base64Url = token.split('.')[1];
   let base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
@@ -13,140 +12,194 @@ function parseJwt(token) {
 export default {
   data() {
     return {
-      connected: false,
-      connecting: false,
-      connection: null,
-      endpointId: "",
-      connectedSince: new Date(),
-      backgroundImg: "",
-      dark: true,
-      instances: {},
-      metadata: null,
-      uptime: "",
-      accent: "accent-blue",
+      connection: {
+        connected: false,
+        connecting: false,
+        websocket: undefined
+      },
+      preferences: {
+        theme: "dark",
+        accent: "blue",
+        background: "viridian"
+      },
+      config: {
+        host: "localhost",
+        port: 3020,
+      },
+      session: {
+        token: "unset",
+        subscriptions: [],
+        instances: [],
+        metadata: {
+          modules: []
+        }
+      }
     }
-
   },
   watch: {
-    '$instances'() {
-      this.enroll()
+    preferences: {
+      handler(newPreferences, oldPreferences) {
+        let context = localStorage.getItem("context");
+        let object = JSON.parse(context)
+        object.preferences = newPreferences
+        localStorage.setItem("context", JSON.stringify(object))
+      }, deep: true
     },
-    connected() {
-      this.parseUptime()
+    session: {
+      handler(newSession, oldSession) {
+        let context = localStorage.getItem("context");
+        let object = JSON.parse(context)
+        object.session = newSession
+        localStorage.setItem("context", JSON.stringify(object))
+      }, deep: true
     }
   },
-  created: function () {
-    this.getBg()
+  created() {
+    let context = localStorage.getItem("context");
+    let object = JSON.parse(context)
+    this.connection = object.connection
+    this.preferences = object.preferences
+    this.config = object.config
+    this.session = object.session
+    this.connect()
+  },
+  computed: {
+    bgImg() {
+      return `/custom/${this.preferences.background || "viridian"}@4x.png`
+    }
   },
   beforeUnmount() {
     this.disconnect()
   },
   methods: {
-    setTheme(bool){
-      this.dark = bool;
+    setTheme(theme) {
+      this.preferences.theme = theme
     },
-    parseUptime() {
-      this.uptime = this.$timeSince(this.$root.connectedSince.getTime())
-    },
-    connect() {
-      this.connecting = true
-      this.connection = new WebSocket(`ws://${this.$host}/ws`)
-      this.connection.onmessage = this.onMessage
-      this.connection.onopen = this.onConnect
-      this.connection.onclose = this.onClose
-    },
-    onConnect(event) {
-      this.connectedSince = new Date()
-      this.endpointId = parseJwt(this.$sessionId).id
-      this.enroll()
-      this.connecting = false
-      this.connected = true
-      console.log("Connected to UDAP controller @ " + this.$host)
-    },
-    onMessage(event) {
-      let data = JSON.parse(event.data)
-      if (!data) console.log("Invalid JSON recieved")
-      switch (data.type) {
-        case "poll":
-          this.instances = data.payload
-          break
-        case "metadata":
-          this.metadata = data.payload
-          console.log("Metadata updated")
-          break
-      }
-    },
-    onClose(event) {
-      this.connected = false
-      this.connecting = false
-      this.connectedSince = new Date()
-      setTimeout(this.connect, 5000)
-    },
-    disconnect() {
-      this.connection.close()
-      this.connecting = false
-      this.connected = false
-      console.log("Disconnected")
+    setBackground(name) {
+      this.preferences.background = name
     },
     enroll() {
-      this.connection.send(JSON.stringify({
-            token: this.$sessionId,
-            type: "enroll",
-            payload: {
-              instances: this.$instances
+      this.connection.websocket.send(JSON.stringify({
+            target: "endpoint",
+            operation: "enroll",
+            body: {
+              instances: this.session.subscriptions
             }
           }
       ));
     },
+    request(target, operation, body) {
+      this.connection.websocket.send(JSON.stringify({
+            target: target,
+            operation: operation,
+            body: body
+          }
+      ));
+    },
     sendAction(instanceId, action) {
-      this.connection.send(JSON.stringify({
-            token: this.$sessionId,
-            type: "action",
-            payload: {
-              instance: instanceId,
+      this.connection.websocket.send(JSON.stringify({
+            target: "instance",
+            operation: "action",
+            body: {
+              id: instanceId,
               action: action
             }
           }
       ));
     },
-    sendReset(instanceId) {
-      this.connection.send(JSON.stringify({
-            token: this.$sessionId,
-            type: "reset",
-            payload: {
-              instance: instanceId
+    modifyInstance(instanceId, name, desc) {
+      this.connection.websocket.send(JSON.stringify({
+            target: "instance",
+            operation: "modify",
+            body: {
+              id: instanceId,
+              name: name,
+              description: desc,
             }
           }
       ));
     },
-    getBackground() {
-      let bg = localStorage.getItem('background')
-      if (!bg) this.setBackground('viridian')
-      return localStorage.getItem('background')
-    },
-    setBackground(name) {
-      localStorage.setItem('background', name)
-      this.getBg()
-    },
-    getMetadata() {
-      this.connection.send(JSON.stringify({
-            token: this.$sessionId,
-            type: "metadata",
-            payload: {}
+    sendDelete(instanceId) {
+      this.connection.websocket.send(JSON.stringify({
+            target: "instance",
+            operation: "delete",
+            body: {
+              id: instanceId,
+            }
           }
       ));
     },
-    getBg() {
-      this.backgroundImg = `/custom/${localStorage.getItem('background') || "viridian"}@4x.png`
-    }
+    sendReset(instanceId) {
+      this.connection.websocket.send(JSON.stringify({
+            target: "instance",
+            operation: "reset",
+            body: {
+              id: instanceId
+            }
+          }
+      ));
+    },
+    getMetadata() {
+      this.connection.websocket.send(JSON.stringify({
+            target: "endpoint",
+            operation: "metadata",
+            body: {}
+          }
+      ));
+    },
+    connect() {
+      if (this.connection.connected || this.session.token === "") return
+
+      let host = `ws://${this.config.host}:${this.config.port}/ws/${this.session.token}`
+
+      this.connection.websocket = new WebSocket(host)
+      this.connection.connecting = true
+      this.connection.websocket.onmessage = this.onMessage
+      this.connection.websocket.onopen = this.onConnect
+      this.connection.websocket.onclose = this.onClose
+      this.connection.websocket.onerror = this.onError
+    },
+    disconnect() {
+      this.connection.websocket.close()
+      this.connection.connecting = false
+      this.connection.connected = false
+    },
+    onError(event) {
+      console.log(event)
+    },
+    onConnect(event) {
+      this.connection.connecting = false
+      this.connection.connected = true
+      this.enroll()
+    },
+    onMessage(event) {
+      let data = JSON.parse(event.data)
+      if (!data) console.log("Invalid JSON received")
+      switch (data.operation) {
+        case "update":
+          this.session.instances = data.body
+          break
+        case "metadata":
+          this.session.metadata = data.body
+          break
+        default:
+          console.log(data);
+      }
+    },
+    onClose(event) {
+      this.connection.connecting = false
+      this.connection.connected = false
+      setTimeout(this.connect, 5000)
+    },
   }
-  ,
 }
 </script>
 
 <template>
-  <div class="root" v-bind:class="`${dark?'theme-dark':'theme-light'} ${accent}`">
-    <img class="backdrop" :src="backgroundImg" :key="backgroundImg" alt="Background"/>
+
+  <div class="root"
+       v-bind:class="`${this.preferences.theme === 'dark'?'theme-dark':'theme-light'} ${this.preferences.accent}`">
+    <img class="backdrop" :src="bgImg" :key="bgImg" alt="Background" style=""/>
     <router-view class="pt-4"/>
   </div>
 </template>
@@ -154,20 +207,27 @@ export default {
 <style>
 
 .root {
-  width: 100vw;
-  height: 100vh;
+  width: calc(100vw - 1em);
+  height: calc(100vh - 1em);
   overflow: hidden;
+  /*border: 4px solid rgba(var(--bs-primary-rgb), 0.5);*/
+  border-radius: 2em;
+  padding: 0em;
+  margin: 0.5em;
+  border: 4px solid transparent;
 }
 
 
 .backdrop {
   z-index: -1;
-  top: -1vw;
-  left: -1vw;
+  top: 0;
+  left: 0;
+
   overflow: hidden;
   position: absolute;
-  width: 101vw;
-  height: 100.75vh;
+  object-fit: cover;
+  width: 100vw;
+  height: 100vh;
   background: #2f363d;
   animation: switch 0.25s ease-in-out;
 }

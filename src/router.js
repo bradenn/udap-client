@@ -4,10 +4,13 @@ import Apps from "./components/Apps.vue"
 import Terminal from "./components/Terminal.vue";
 import Register from "./components/Register.vue";
 import Settings from "./components/Settings.vue";
-import Config from "./components/settings/Config.vue";
-import General from "./components/settings/General.vue";
+import Instances from "./components/settings/Instances.vue";
+import Endpoint from "./components/settings/Endpoint.vue";
 import Connection from "./components/settings/Connection.vue";
 import Diagnostic from "./components/Diagnostic.vue";
+import Entities from "./components/settings/Entities.vue";
+import Cameras from "./components/Cameras.vue";
+import Security from "./components/Security.vue";
 
 const routes = [
     {
@@ -30,37 +33,68 @@ const routes = [
                 path: '/terminal/home',
                 name: 'Home',
                 component: Home,
+                meta: { slideOrder: 0 }
+            },
+            {
+                path: '/terminal/camera',
+                name: 'Cameras',
+                icon: 'bi-camera-video',
+                component: Cameras,
+                meta: { slideOrder: 1 },
             },
             {
                 path: '/terminal/apps',
                 name: 'Apps',
                 component: Apps,
+                meta: { slideOrder: 2 }
+            },
+            {
+                path: '/terminal/security',
+                name: 'Security',
+                component: Security,
+                meta: { slideOrder: 3 }
             },
             {
                 path: '/terminal/settings',
                 name: 'Settings',
-                redirect: '/terminal/settings/general',
+                redirect: '/terminal/settings/endpoint',
                 component: Settings,
+                meta: { slideOrder: 4 },
                 children: [
                     {
-                        path: '/terminal/settings/general',
-                        name: 'General',
-                        component: General,
+                        path: '/terminal/settings/endpoint',
+                        name: 'Endpoint',
+                        component: Endpoint,
+                        icon: 'bi-display',
+                        meta: { slideOrder: 4 },
                     },
                     {
-                        path: '/terminal/settings/config',
-                        name: 'Config',
-                        component: Config,
+                        path: '/terminal/settings/instances',
+                        name: 'Instances',
+                        icon: 'bi-layers',
+                        component: Instances,
+                        meta: { slideOrder: 4 },
+                    },
+                    {
+                        path: '/terminal/settings/entities',
+                        name: 'Entities',
+                        icon: 'bi-lightbulb',
+                        component: Entities,
+                        meta: { slideOrder: 4 },
                     },
                     {
                         path: '/terminal/settings/connection',
                         name: 'Connection',
+                        icon: 'bi-diagram-3',
                         component: Connection,
+                        meta: { slideOrder: 4 },
                     }
                 ]
-            }
+            },
+
         ]
     },
+
 ]
 
 

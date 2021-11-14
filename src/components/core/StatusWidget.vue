@@ -3,22 +3,24 @@
 export default {
   data() {
     return {
-      uptime: ""
+      uptime: "",
+      modClock: 0,
+      modDir: false,
     }
   },
-  watch: {
-  },
+  watch: {},
   created() {
-
+    setInterval(this.tick, 250)
   },
   methods: {
-    parseUptime(){
-      let since = (new Date().getTime() - this.$root.connectedSince.getTime()) / 1000
-      let minutes = Math.round(since/60)
-      let hours = Math.round(minutes/60)
-      let days = Math.round(hours/24)
-      this.uptime = `${days}d ${hours}h ${minutes}m`
-    }
+    tick() {
+      this.modClock += this.modDir ? 1 : -1;
+      if (this.modClock >= 4) {
+        this.modDir = false
+      } else if (this.modClock <= 0) {
+        this.modDir = true
+      }
+    },
   },
 }
 </script>
@@ -26,23 +28,23 @@ export default {
 <template>
   <div class="d-flex justify-content-end">
     <div class="dropdown">
-      <a href="#" class="d-flex align-items-center element status-bar dropdown-toggle" role="button"
-         id="dropdownMenuLink" data-bs-toggle="dropdown" v-on:click="parseUptime">
-        <i class="bi indicator"
-           v-bind:class="this.$root.connected ? 'text-success bi-circle-fill ' : this.$root.connecting ? 'text-warning bi-circle-fill ' : 'text-danger bi-circle-fill pulse'"></i>
+      <a href="#" class="d-flex align-items-center status-bar element dropdown-toggle" role="button"
+         id="dropdownMenuLink" data-bs-toggle="dropdown">
+        <span
+            class="flex-grow-1 fw-bold">Status: {{ this.$root.connection.connected ? 'OK' : 'Connection Lost' }}</span>
+        <i class="bi "
+           v-bind:class="this.$root.connection.connecting?`bi-reception-${this.modClock}`:this.$root.connection.connected?`bi-reception-4`:`bi-reception-0`"></i>
+        <i class="bi bi-cloud-fill"></i>
+        <!--        <i class="bi indicator"
+                   v-bind:class="this.$root.connected ? 'text-success bi-circle-fill ' : this.$root.connecting ? 'text-warning bi-circle-fill ' : 'text-danger bi-circle-fill pulse'"></i>-->
       </a>
 
       <div class="dropdown-menu">
         <div class="dropdown-header">Connection</div>
-        <div class="dropdown-item small"><span class="fw-menu-item">Status</span>{{this.$root.connected ? 'Connected' : this.$root.connecting ? 'Connecting' : 'Disconnected'}}</div>
-        <div class="dropdown-item small"><span class="fw-menu-item">Host</span>{{ this.$host }}</div>
-        <div class="dropdown-item small"><span class="fw-menu-item">Uptime</span>{{ uptime }}</div>
-        <div class="dropdown-header">Metadata</div>
-
-        <div  v-if="this.$root.metadata !== null">
-          <div class="dropdown-item small"><span class="fw-menu-item">Name</span>{{ this.$root.metadata.endpoint.name }}</div>
-        <div class="dropdown-item small"><span class="fw-menu-item">UUID</span><span class="short-string">{{ this.$root.endpointId }}</span></div>
+        <div class="dropdown-item small"><span
+            class="fw-menu-item">Status</span>{{ this.$root.connection.connected ? 'Connected' : this.$root.connection.connecting ? 'Connecting' : 'Disconnected' }}
         </div>
+        <div class="dropdown-item small"><span class="fw-menu-item">Host</span>{{ this.$root.config.host }}</div>
       </div>
     </div>
   </div>
@@ -50,12 +52,13 @@ export default {
 
 <style scoped>
 
-.fw-menu-item{
+.fw-menu-item {
   display: inline-block;
   width: 64px;
   font-weight: bold;
   color: var(--bs-gray-400);
 }
+
 .short-string {
   line-height: 11px;
   display: inline-block;
@@ -66,15 +69,27 @@ export default {
 }
 
 .status-bar {
+
+  /*background-color: rgba(var(--bs-primary-rgb), 0.5) !important;*/
+  height: 3em;
+  width: 24em;
   line-height: 1em;
   font-size: 12px;
-  padding: 0.5em 0.5em;
+  border-radius: 1em;
+
+  padding: 0.5em 1em !important;
+  justify-content: right;
+  gap: 1em;
+}
+
+.dropdown-toggle:hover {
+  color: inherit;
 }
 
 .dropdown-toggle::after {
   border-radius: 8px;
   border-width: 5px;
-  border-top-color: rgba(255, 255, 255, 0.16) !important;
+  border-top-color: rgba(255, 255, 255, 0.5) !important;
 }
 
 .indicator {

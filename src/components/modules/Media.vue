@@ -84,7 +84,7 @@ export default {
   </div>
 </template>
 
-<style>
+<style scoped>
 
 .play {
   font-size: 3em !important;

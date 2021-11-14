@@ -9,7 +9,14 @@ export default {
   data() {
     return {
       headerScale: "lg",
+      transitionName: 'slide-left'
     }
+  },
+  beforeRouteUpdate (to, from, next) {
+    const toDepth = to.meta.slideOrder
+    const fromDepth = from.meta.slideOrder
+    this.transitionName = toDepth < fromDepth ? 'slide-right' : 'slide-left'
+    next()
   },
   watch: {
     '$route'(to, from) {
@@ -17,42 +24,40 @@ export default {
     }
   },
   created() {
-    this.$root.connect()
     this.updateScale()
   },
   methods: {
     updateScale() {
       this.headerScale = this.$route.name !== "Home" ? "sm" : "lg"
+
     },
   },
 }
 </script>
 
 <template>
-  <div class="container terminal">
-
-    <div class="row">
-      <div class="col-4">
+  <div class="container-fluid terminal px-4">
+    <div class="d-flex justify-content-between align-content-center">
         <div class="head">
-          <div>
+
+          <div class="" style="z-index: 10;">
             <Clock v-bind:size="headerScale"></Clock>
+
           </div>
         </div>
-      </div>
 
-      <div class="col-3"></div>
-
-      <div class="col-5">
+      <div>
         <StatusWidget></StatusWidget>
       </div>
     </div>
+
     <div class="h-100">
       <div class="row">
         <div class="col-12">
 
           <router-view v-slot="{ Component }">
-            <transition name="fade" mode="out-in">
-              <component :is="Component"/>
+            <transition :name="transitionName" mode="out-in">
+              <component class="child-view" :is="Component"/>
             </transition>
           </router-view>
 
@@ -63,22 +68,24 @@ export default {
     <div class="row">
       <div class="col-12">
         <Dock>
-          <router-link class="icon" to="/terminal/home">
+          <router-link class="icon" :class="`${this.transitionName}`" to="/terminal/home">
             <i class="bi bi-house"></i>
           </router-link>
-          <router-link class="icon" to="/terminal/apps">
+          <router-link class="icon" :class="`${this.transitionName}`" to="/terminal/camera">
+            <i class="bi bi-camera-video"></i>
+          </router-link>
+          <router-link class="icon" :class="`${this.transitionName}`" to="/terminal/apps">
             <i class="bi bi-grid-3x3-gap"></i>
           </router-link>
-          <!--          <div class="icon">
-                      <i class="bi bi-shield-shaded"></i>
-                    </div>
-                    <div class="icon">
-                      <i class="bi bi-lightning-charge-fill"></i>
-                    </div>-->
-          <router-link class="icon" to="/terminal/settings">
+
+          <router-link class="icon" :class="`${this.transitionName}`" to="/terminal/security">
+            <i class="bi bi-shield"></i>
+          </router-link>
+          <router-link class="icon" :class="`${this.transitionName}`" to="/terminal/settings">
             <i class="bi bi-gear"></i>
           </router-link>
         </Dock>
+
       </div>
     </div>
 
@@ -87,15 +94,54 @@ export default {
 
 </template>
 
-<style scoped>
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.125s ease;
+<style>
+.fade-enter-active, .fade-leave-active {
+  transition: opacity .125s cubic-bezier(0.5, 0.8, 0.5, 0.2);
+}
+.fade-enter, .fade-leave-active {
+  opacity: 0;
 }
 
-.fade-enter-from,
-.fade-leave-to {
-  opacity: 0;
+.child-view {
+  transition: all .25s ease-out;
+}
+.dock {
+  transition: all .25s ease-out;
+}
+
+.slide-left-enter, .slide-right-leave-active {
+
+  transform: translate(100%, 0);
+}
+.slide-left-leave-active, .slide-right-enter {
+
+  transform: translate(-100%, 0);
+}
+
+.slide-left.router-link-active.icon {
+  animation: slide-in-left 500ms cubic-bezier(0,1.21,.39,.96);
+}
+
+.slide-right.router-link-active.icon {
+  animation: slide-in-right 500ms cubic-bezier(0,1.21,.39,.96);
+}
+
+@keyframes slide-in-right {
+  0% {
+    transform: translate(2em, 0);
+  }
+  100% {
+    transform: translate(0, 0em);
+  }
+}
+
+@keyframes slide-in-left {
+  0% {
+    transform: translate(-2em, 0);
+  }
+  100% {
+    transform: translate(0, 0em);
+  }
 }
 
 .hidden {
@@ -109,11 +155,13 @@ export default {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+
 }
 
 
 .head {
   display: flex;
+  height: 2.5em !important;
   align-items: baseline;
   margin-bottom: 1em;
   justify-content: start;
@@ -154,4 +202,6 @@ export default {
   font-size: 96px;
   line-height: 78px;
 }
+
+
 </style>

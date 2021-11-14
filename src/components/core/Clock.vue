@@ -28,6 +28,7 @@ export default {
         hour: 'numeric',
         minute: 'numeric',
         second: 'numeric',
+        hour12: true,
       }).formatToParts(new Date())
     }
   },
@@ -35,20 +36,23 @@ export default {
 </script>
 
 <template>
-  <div class="clock" v-bind:class="`clock-${size}`">
-    {{ time.map(a => (a.type !== "dayPeriod") ? a.value : "").join("") }}
+  <div class="clock" v-bind:class="`clock-${size}`" v-html="
+      time.map(a => {
+        return (a.type !== 'dayPeriod') ? a.value : ``
+  }).join('')">
+
+
   </div>
 </template>
 
 <style scoped>
 .clock-sm {
-  font-size: 2em !important;
+  font-size: 2.5em !important;
 }
 
 .clock {
-  font-family: "Roboto", monospace !important;
-  font-size: 3em;
-  font-weight: 500;
+  font-size: 3.5em;
+  font-weight: 600;
   line-height: 1em;
   text-shadow: 1px 1px 12px rgba(0, 0, 0, 0.25);
   transition: font-size 0.25s ease-in-out;
