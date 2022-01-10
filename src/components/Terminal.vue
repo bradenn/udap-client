@@ -1,148 +1,207 @@
 <script>
-import Dock from "./partials/Dock.vue";
-import Media from "./modules/Media.vue";
-import StatusWidget from "./core/StatusWidget.vue";
-import Clock from "./core/Clock.vue";
+import Dock from "./Dock.vue";
+import StatusWidget from "./Hub.vue";
+import Clock from "./Clock.vue";
+import Group from "./Group.vue";
 
 export default {
-  components: {Dock, Media, StatusWidget, Clock},
+  components: {Group, Dock, StatusWidget, Clock},
   data() {
     return {
+      pages: ["/terminal/home", "/terminal/apps", "/terminal/shell", "/terminal/settings"],
+      page: 0,
       headerScale: "lg",
-      transitionName: 'slide-left'
+      transitionName: 'slide-left',
+      isDragging: false,
+      context: false,
+      verified: false,
+      dragA: {x: 0, y: 0}
     }
   },
-  beforeRouteUpdate (to, from, next) {
+  beforeRouteUpdate(to, from, next) {
     const toDepth = to.meta.slideOrder
     const fromDepth = from.meta.slideOrder
     this.transitionName = toDepth < fromDepth ? 'slide-right' : 'slide-left'
     next()
   },
-  watch: {
-    '$route'(to, from) {
-      this.updateScale()
-    }
-  },
+  watch: {},
   created() {
-    this.updateScale()
   },
   methods: {
-    updateScale() {
-      this.headerScale = this.$route.name !== "Home" ? "sm" : "lg"
+    showContext() {
+      this.context = true
+    },
+    timeout() {
+      if (this.isDragging) {
+        this.verified = true
+
+      }
+    },
+    dragContinue(e) {
 
     },
+    goRight() {
+      if (this.page + 1 <= 4) {
+        this.page++;
+        /*   this.$router.replace(this.pages[this.page])*/
+      }
+    },
+    goLeft() {
+      if (this.page - 1 >= 0) {
+        this.page--;
+        /*      this.$router.replace(this.pages[this.page])*/
+      }
+    },
+    dragStart(e) {
+      this.isDragging = true;
+      let a = {x: e.clientX, y: e.clientY}
+      if (a.y < 64) {
+        /*  this.context = !this.context*/
+      }
+      this.dragA = a
+      setTimeout(this.timeout, 300)
+    },
+    dragStop(e) {
+      this.isDragging = false;
+      if (this.verified) {
+        let dragB = {x: e.clientX, y: e.clientY}
+        if (dragB.x > this.dragA.x) {
+          this.goLeft()
+        } else {
+          this.goRight()
+        }
+      }
+      this.dragA = {x: 0, y: 0}
+    }
   },
 }
 </script>
 
 <template>
-  <div class="container-fluid terminal px-4">
-    <div class="d-flex justify-content-between align-content-center">
-        <div class="head">
 
-          <div class="" style="z-index: 10;">
-            <Clock v-bind:size="headerScale"></Clock>
+  <div class="terminal" v-on:mousedown="dragStart" v-on:mousemove="dragContinue" v-on:mouseup="dragStop">
 
-          </div>
-        </div>
+    <div class="generic-container">
 
-      <div>
+      <div class="generic-slot-sm">
+        <Clock></Clock>
+      </div>
+
+      <div class="generic-slot-sm">
         <StatusWidget></StatusWidget>
       </div>
-    </div>
 
+    </div>
     <div class="h-100">
-      <div class="row">
-        <div class="col-12">
-
-          <router-view v-slot="{ Component }">
-            <transition :name="transitionName" mode="out-in">
-              <component class="child-view" :is="Component"/>
-            </transition>
-          </router-view>
-
-        </div>
-      </div>
+      <router-view v-slot="{ Component }">
+        <transition :name="transitionName" mode="out-in">
+          <component :is="Component" class="child-view"/>
+        </transition>
+      </router-view>
     </div>
-
-    <div class="row">
-      <div class="col-12">
-        <Dock>
-          <router-link class="icon" :class="`${this.transitionName}`" to="/terminal/home">
-            <i class="bi bi-house"></i>
-          </router-link>
-          <router-link class="icon" :class="`${this.transitionName}`" to="/terminal/camera">
-            <i class="bi bi-camera-video"></i>
-          </router-link>
-          <router-link class="icon" :class="`${this.transitionName}`" to="/terminal/apps">
-            <i class="bi bi-grid-3x3-gap"></i>
-          </router-link>
-
-          <router-link class="icon" :class="`${this.transitionName}`" to="/terminal/security">
-            <i class="bi bi-shield"></i>
-          </router-link>
-          <router-link class="icon" :class="`${this.transitionName}`" to="/terminal/settings">
-            <i class="bi bi-gear"></i>
-          </router-link>
-        </Dock>
-
-      </div>
-    </div>
-
 
   </div>
 
 </template>
 
-<style>
+<style lang="scss">
+
+.terminal {
+  padding: 1em;
+  height: 100vh !important;
+  overflow: no-display;
+}
+
+.bar {
+  position: relative;
+  height: 100vh;
+
+  display: flex;
+  flex-direction: row;
+  justify-content: start;
+  padding: 0;
+
+  border-radius: 0;
+}
+
+.sf {
+  font-family: 'SF Pro Display', sans-serif;
+  font-weight: 400 !important;
+}
+
+.profile {
+
+  aspect-ratio: 3/1;
+}
+
+.endpoint {
+  font-size: 1.2em;
+  padding: 0.25em 1.2em;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.8);
+
+}
+
 .fade-enter-active, .fade-leave-active {
   transition: opacity .125s cubic-bezier(0.5, 0.8, 0.5, 0.2);
 }
+
 .fade-enter, .fade-leave-active {
   opacity: 0;
 }
 
-.child-view {
+.child-view .element {
+  max-height: calc(100vh - 128px) !important;
   transition: all .25s ease-out;
 }
+
 .dock {
   transition: all .25s ease-out;
 }
 
-.slide-left-enter, .slide-right-leave-active {
-
-  transform: translate(100%, 0);
+.slide-left-enter, .slide-right-enter {
+  animation: blur-in 300ms linear forwards;
 }
-.slide-left-leave-active, .slide-right-enter {
 
-  transform: translate(-100%, 0);
+.slide-right-leave-active > *, .slide-left-leave-active > * {
+  animation: blur-out 300ms;
+  animation-fill-mode: forwards;
+  animation-iteration-count: 1;
+  position: relative;
+  top: 0;
+}
+
+@keyframes blur-out {
+  0% {
+    filter: blur(0px);
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    filter: blur(8px);
+    /*transform: scaleZ(1);*/
+  }
+}
+
+@keyframes blur-in {
+  0% {
+    filter: blur(8px);
+    opacity: 0 !important;
+  }
+  100% {
+    filter: blur(0px);
+    opacity: 1 !important;
+  }
 }
 
 .slide-left.router-link-active.icon {
-  animation: slide-in-left 500ms cubic-bezier(0,1.21,.39,.96);
+  /*animation: slide-in-left 500ms cubic-bezier(0,1.21,.39,.96);*/
 }
 
 .slide-right.router-link-active.icon {
-  animation: slide-in-right 500ms cubic-bezier(0,1.21,.39,.96);
+  /*animation: slide-in-right 500ms cubic-bezier(0,1.21,.39,.96);*/
 }
 
-@keyframes slide-in-right {
-  0% {
-    transform: translate(2em, 0);
-  }
-  100% {
-    transform: translate(0, 0em);
-  }
-}
-
-@keyframes slide-in-left {
-  0% {
-    transform: translate(-2em, 0);
-  }
-  100% {
-    transform: translate(0, 0em);
-  }
-}
 
 .hidden {
   position: relative;
@@ -161,7 +220,7 @@ export default {
 
 .head {
   display: flex;
-  height: 2.5em !important;
+  height: 3.5em !important;
   align-items: baseline;
   margin-bottom: 1em;
   justify-content: start;

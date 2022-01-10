@@ -8,7 +8,7 @@ export default {
     }
   },
   created() {
-    if (this.$root.session.token !== '') this.$router.push("/terminal/home")
+    if (this.$root.session.token !== '' && this.$root.session.token !== 'unset') this.$router.push("/terminal/home")
   },
   methods: {
     register(key) {

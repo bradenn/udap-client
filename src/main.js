@@ -1,38 +1,27 @@
-import {createApp, reactive} from 'vue'
+import {createApp} from 'vue'
 import router from './router'
 import Root from './Root.vue'
 import axios from 'axios';
 
+import Element from "./components/Element.vue";
+import Dock from "./components/Dock.vue";
+import Selector from "./components/Selector.vue";
+import Pane from "./components/Pane.vue";
+import Group from "./components/Group.vue";
+import Header from "./components/Header.vue";
+
 const app = createApp(Root)
 
-let preferences = {
-    connection: {
-        connected: false,
-        connecting: false,
-        websocket: undefined
-    },
-    preferences: {
-        theme: "dark",
-        accent: "blue",
-        background: "viridian"
-    },
-    config: {
-        host: "localhost",
-        port: 3020,
-    },
-    session: {
-        token: "",
-        endpoint: {},
-        instances: [],
-        metadata: {}
-    }
-}
 
-if (!localStorage.getItem('context')) {
-    localStorage.setItem('context', JSON.stringify(preferences))
-}
+app.component("Element", Element)
+app.component("Dock", Dock)
+app.component("Selector", Selector)
+app.component("Pane", Pane)
+app.component("Group", Group)
+app.component("Header", Header)
 
-app.config.globalProperties.$timeSince = function (date) {
+
+    app.config.globalProperties.$timeSince = function (date) {
     if (typeof date !== 'object') {
         date = new Date(date);
     }
@@ -75,28 +64,8 @@ app.config.globalProperties.$timeSince = function (date) {
     return interval + ' ' + intervalType;
 };
 
-if (!localStorage.getItem('instances')) localStorage.setItem('instances', JSON.stringify([]))
-
-app.config.globalProperties.$instances = JSON.parse(localStorage.getItem('instances'))
-
-app.config.globalProperties.$addInstance = function (instance) {
-    let current = JSON.parse(localStorage.getItem('instances'))
-    if (!current.includes(instance)) {
-        current.push(instance)
-        localStorage.setItem('instances', JSON.stringify(current))
-        app.config.globalProperties.$instances = current;
-    }
-}
-app.config.globalProperties.$removeInstance = function (instance) {
-    let current = JSON.parse(localStorage.getItem('instances'))
-    if (current.includes(instance)) {
-        let cache = current.filter(id => id !== instance);
-        localStorage.setItem('instances', JSON.stringify(current.filter(id => id !== instance)))
-        app.config.globalProperties.$instances = cache;
-    }
-}
-
 app.config.globalProperties.$http = axios
 
 app.use(router)
+
 app.mount('#app')

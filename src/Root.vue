@@ -1,4 +1,11 @@
 <script>
+import Element from "./components/Element.vue";
+import Frame from "./components/Pane.vue";
+import SimpleKeyboard from "./components/Keyboard.vue";
+import Loading from "./components/Loading.vue";
+import Context from "./components/Context.vue";
+
+
 function parseJwt(token) {
   let base64Url = token.split('.')[1];
   let base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
@@ -10,57 +17,79 @@ function parseJwt(token) {
 }
 
 export default {
+  components: {Context, Loading, SimpleKeyboard, Element, Frame},
   data() {
     return {
-      connection: {
-        connected: false,
-        connecting: false,
-        websocket: undefined
+      state: {
+        keyboard: false,
+        waiting: false,
+        accepting: false,
+        error: "",
+        input: "",
+        last: new Date(),
+        history: []
       },
       preferences: {
-        theme: "dark",
-        accent: "blue",
-        background: "viridian"
+        accent: "slate",
+        background: "viridian",
+        blur: 5,
+        input: "mouse",
+        padding: 4,
+        scale: "1.25",
+        theme: "dark"
       },
       config: {
         host: "localhost",
         port: 3020,
       },
+      connection: {
+        connected: false,
+        connecting: false,
+        websocket: undefined,
+        error: {}
+      },
+      entities: {},
       session: {
         token: "unset",
         subscriptions: [],
-        instances: [],
         metadata: {
-          modules: []
+          endpoint: {},
+          modules: [],
+          entities: []
         }
       }
     }
   },
   watch: {
     preferences: {
-      handler(newPreferences, oldPreferences) {
-        let context = localStorage.getItem("context");
-        let object = JSON.parse(context)
-        object.preferences = newPreferences
-        localStorage.setItem("context", JSON.stringify(object))
+      handler(a, b) {
+        this.saveConfig()
+      }, deep: true
+    },
+    config: {
+      handler(a, b) {
+        this.saveConfig()
       }, deep: true
     },
     session: {
-      handler(newSession, oldSession) {
-        let context = localStorage.getItem("context");
-        let object = JSON.parse(context)
-        object.session = newSession
-        localStorage.setItem("context", JSON.stringify(object))
+      handler(a, b) {
+        this.saveConfig()
       }, deep: true
     }
   },
+  emits: {
+    toUdap: ({target, operation, payload}) => {
+      this.connection.websocket.send(JSON.stringify({
+            target: target,
+            operation: operation,
+            body: payload
+          }
+      ));
+    }
+  },
   created() {
-    let context = localStorage.getItem("context");
-    let object = JSON.parse(context)
-    this.connection = object.connection
-    this.preferences = object.preferences
-    this.config = object.config
-    this.session = object.session
+    this.isConfig()
+    this.loadConfig()
     this.connect()
   },
   computed: {
@@ -72,6 +101,51 @@ export default {
     this.disconnect()
   },
   methods: {
+
+    saveConfig() {
+
+      let obj = {};
+      obj.preferences = this.preferences
+      obj.config = this.config
+      obj.session = this.session
+      let str = JSON.stringify(obj)
+      localStorage.setItem("context", str)
+    },
+    isConfig() {
+      if(localStorage.getItem("context") === null) {
+        this.saveConfig()
+        this.$router.push("/")
+      }
+    },
+    loadConfig() {
+      let cnf = localStorage.getItem("context")
+
+      let obj = JSON.parse(cnf);
+
+      if(obj.preferences != null) this.preferences = obj.preferences
+      if(obj.config != null) this.config = obj.config
+      if(obj.session != null) this.session = obj.session
+      let str = JSON.stringify(obj)
+      localStorage.setItem("context", str)
+    },
+    updateLocal(section, body) {
+      let context = localStorage.getItem(section);
+      if (!context) {
+        localStorage.setItem(section, JSON.stringify(body))
+        return
+      }
+      let object = JSON.parse(context)
+      object = body
+      localStorage.setItem(section, JSON.stringify(object))
+    },
+    pullUpdates(section) {
+      let context = localStorage.getItem(section);
+      if (context === 'undefined') {
+        localStorage.setItem(section, JSON.stringify(prev))
+        return
+      }
+      return JSON.parse(context)
+    },
     setTheme(theme) {
       this.preferences.theme = theme
     },
@@ -79,20 +153,22 @@ export default {
       this.preferences.background = name
     },
     enroll() {
-      this.connection.websocket.send(JSON.stringify({
-            target: "endpoint",
-            operation: "enroll",
-            body: {
-              instances: this.session.subscriptions
-            }
-          }
-      ));
+
     },
     request(target, operation, body) {
       this.connection.websocket.send(JSON.stringify({
             target: target,
             operation: operation,
             body: body
+          }
+      ));
+    },
+    requestId(target, operation, body, id) {
+      this.connection.websocket.send(JSON.stringify({
+            target: target,
+            operation: operation,
+            payload: body,
+            id: id
           }
       ));
     },
@@ -141,8 +217,8 @@ export default {
     },
     getMetadata() {
       this.connection.websocket.send(JSON.stringify({
-            target: "endpoint",
-            operation: "metadata",
+            target: "controller",
+            operation: "compile",
             body: {}
           }
       ));
@@ -150,7 +226,7 @@ export default {
     connect() {
       if (this.connection.connected || this.session.token === "") return
 
-      let host = `ws://${this.config.host}:${this.config.port}/ws/${this.session.token}`
+      let host = `ws://${this.config.host}:${this.config.port}/socket/${this.session.token}`
 
       this.connection.websocket = new WebSocket(host)
       this.connection.connecting = true
@@ -165,70 +241,89 @@ export default {
       this.connection.connected = false
     },
     onError(event) {
-      console.log(event)
+      this.state.error = JSON.stringify(event)
     },
     onConnect(event) {
+      this.accepting = true
       this.connection.connecting = false
       this.connection.connected = true
-      this.enroll()
+      this.accepting = false
     },
     onMessage(event) {
+      this.accepting = true
       let data = JSON.parse(event.data)
       if (!data) console.log("Invalid JSON received")
       switch (data.operation) {
-        case "update":
-          this.session.instances = data.body
-          break
         case "metadata":
+          this.state.last = new Date()
+            this.state.waiting = false
           this.session.metadata = data.body
           break
         default:
           console.log(data);
       }
+      this.accepting = false
     },
     onClose(event) {
       this.connection.connecting = false
       this.connection.connected = false
       setTimeout(this.connect, 5000)
     },
+    rootClasses() {
+      return `${this.preferences.theme === 'dark' ? 'theme-dark' : 'theme-light'} ${this.preferences.input === 'touchscreen' ? 'input-touch' : ''} accent-${this.preferences.accent} blurs-${this.preferences.blur} padding-${this.preferences.padding}`
+    },
   }
+
 }
+
 </script>
 
 <template>
+  <div class="root" v-bind:class="rootClasses()">
+    <img :key="bgImg" :src="bgImg" alt="Background" class="backdrop" style=""/>
+    <router-view/>
 
-  <div class="root"
-       v-bind:class="`${this.preferences.theme === 'dark'?'theme-dark':'theme-light'} ${this.preferences.accent}`">
-    <img class="backdrop" :src="bgImg" :key="bgImg" alt="Background" style=""/>
-    <router-view class="pt-4"/>
+    <Context :open="!!this.state.error">
+      {{this.state.error}}
+    </Context>
+    <SimpleKeyboard v-if="state.keyboard" :input="this.state.input"></SimpleKeyboard>
   </div>
 </template>
 
-<style>
+<style lang="scss">
+@import "/scss/app";
 
-.root {
-  width: calc(100vw - 1em);
-  height: calc(100vh - 1em);
-  overflow: hidden;
-  /*border: 4px solid rgba(var(--bs-primary-rgb), 0.5);*/
-  border-radius: 2em;
-  padding: 0em;
-  margin: 0.5em;
-  border: 4px solid transparent;
+.element {
+  @extend .bg-blur;
+  box-shadow: 0 0 12px 2px rgb(0 0 0 / 20%);
+  transition: background-color 100ms ease, backdrop-filter 500ms ease;
 }
 
+.window {
+  @extend .surface;
+}
+
+.root {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  border-radius: 1rem 1rem 1rem 1rem !important;
+}
 
 .backdrop {
-  z-index: -1;
+
+  z-index: -2 !important;
   top: 0;
   left: 0;
-
   overflow: hidden;
   position: absolute;
   object-fit: cover;
   width: 100vw;
+
   height: 100vh;
-  background: #2f363d;
   animation: switch 0.25s ease-in-out;
 }
 

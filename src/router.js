@@ -1,16 +1,15 @@
 import {createRouter, createWebHistory} from "vue-router";
-import Home from "./components/Home.vue"
-import Apps from "./components/Apps.vue"
+import Home from "./views/Home.vue"
+import Apps from "./views/Apps.vue"
 import Terminal from "./components/Terminal.vue";
-import Register from "./components/Register.vue";
-import Settings from "./components/Settings.vue";
-import Instances from "./components/settings/Instances.vue";
-import Endpoint from "./components/settings/Endpoint.vue";
-import Connection from "./components/settings/Connection.vue";
-import Diagnostic from "./components/Diagnostic.vue";
-import Entities from "./components/settings/Entities.vue";
-import Cameras from "./components/Cameras.vue";
-import Security from "./components/Security.vue";
+import Register from "./views/Register.vue";
+import Settings from "./views/Settings.vue";
+import Endpoint from "./views/settings/Endpoint.vue";
+import Connection from "./views/settings/Connection.vue";
+import Entities from "./views/settings/Entities.vue";
+import Shell from "./views/Shell.vue";
+import Whiteboard from "./components/apps/Whiteboard.vue";
+import Network from "./views/settings/Network.vue";
 
 const routes = [
     {
@@ -19,75 +18,75 @@ const routes = [
         component: Register
     },
     {
-        path: '/diagnostic',
-        name: 'Diagnostic',
-        component: Diagnostic
-    },
-    {
         path: '/terminal',
         name: 'Terminal',
         redirect: '/terminal/home',
         component: Terminal,
         children: [
             {
+                path: '/terminal/apps/whiteboard',
+                name: 'Whiteboard',
+                component: Whiteboard,
+                icon: 'bi-display',
+                sf: '􀏒',
+                meta: {slideOrder: 4},
+            },
+            {
                 path: '/terminal/home',
                 name: 'Home',
                 component: Home,
-                meta: { slideOrder: 0 }
-            },
-            {
-                path: '/terminal/camera',
-                name: 'Cameras',
-                icon: 'bi-camera-video',
-                component: Cameras,
-                meta: { slideOrder: 1 },
+                meta: {slideOrder: 0}
             },
             {
                 path: '/terminal/apps',
                 name: 'Apps',
                 component: Apps,
-                meta: { slideOrder: 2 }
+                meta: {slideOrder: 2},
             },
             {
-                path: '/terminal/security',
-                name: 'Security',
-                component: Security,
-                meta: { slideOrder: 3 }
+                path: '/terminal/shell',
+                name: 'Shell',
+                component: Shell,
+                meta: {slideOrder: 3}
             },
             {
                 path: '/terminal/settings',
                 name: 'Settings',
                 redirect: '/terminal/settings/endpoint',
                 component: Settings,
-                meta: { slideOrder: 4 },
+                meta: {slideOrder: 4},
                 children: [
                     {
                         path: '/terminal/settings/endpoint',
                         name: 'Endpoint',
                         component: Endpoint,
                         icon: 'bi-display',
-                        meta: { slideOrder: 4 },
-                    },
-                    {
-                        path: '/terminal/settings/instances',
-                        name: 'Instances',
-                        icon: 'bi-layers',
-                        component: Instances,
-                        meta: { slideOrder: 4 },
+                        sf: '􀢹',
+                        meta: {slideOrder: 4},
                     },
                     {
                         path: '/terminal/settings/entities',
                         name: 'Entities',
                         icon: 'bi-lightbulb',
+                        sf: '􀛭',
                         component: Entities,
-                        meta: { slideOrder: 4 },
+                        meta: {slideOrder: 4},
                     },
                     {
                         path: '/terminal/settings/connection',
                         name: 'Connection',
-                        icon: 'bi-diagram-3',
+                        icon: 'bi-link',
+                        sf: '􀉣',
                         component: Connection,
-                        meta: { slideOrder: 4 },
+                        meta: {slideOrder: 4},
+                    },
+                    {
+                        path: '/terminal/settings/network',
+                        name: 'Network',
+                        icon: 'bi-diagram-3',
+                        sf: '􀤆',
+                        component: Network,
+                        meta: {slideOrder: 4},
                     }
                 ]
             },
