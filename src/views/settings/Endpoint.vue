@@ -84,6 +84,7 @@ export default {
             {name: "Viridian", value: "viridian"},
             {name: "Milk", value: "milk"},
             {name: "Nerfdart", value: "nerfdart"},
+            {name: "Daemon", value: "daemon"},
             {name: "Star Trail", value: "startrail"}]
         },
         blur: {

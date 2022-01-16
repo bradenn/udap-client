@@ -2,6 +2,7 @@
 import * as moment from 'moment'
 
 export default {
+  name: "Clock",
   data() {
     return {
       time: null,
@@ -12,6 +13,7 @@ export default {
   },
   props: {
     size: String,
+    inner: Boolean,
     large: Boolean,
   },
   computed: {
@@ -50,7 +52,7 @@ export default {
 
       let m = moment();
       m.year(m.year() + 10000)
-      this.date = m.format("dddd, MMMM DD, YYYY") + "HE";
+      this.date = m.format("dddd, MMMM Do, YYYY");
 
     }
   },
@@ -78,6 +80,10 @@ export default {
       </div>
 
     </div>
+  </div>
+  <div v-else-if="inner">
+    <div class="clock-time-inner top" v-html="time"></div>
+    <div class="clock-date-inner" v-html="date"></div>
   </div>
   <div v-else>
     <div class="clock-time top" v-html="time"></div>

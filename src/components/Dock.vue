@@ -14,7 +14,7 @@ export default {
 </script>
 
 <template>
-  <Element  class="dock" v-bind:class="`${small?'dock-small':''} ${small?'dock-os':''}`">
+  <Element  class="dock" v-bind:class="`${small?'dock-small':''} ${os?'dock-os':''}`">
     <slot></slot>
   </Element>
 </template>

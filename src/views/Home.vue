@@ -7,14 +7,17 @@ import Context from "../components/Context.vue";
 import Header from "../components/Header.vue";
 import Weather from "../components/Weather.vue";
 import Graph from "../components/Graph.vue";
+import Clock from "../components/Clock.vue";
+import Room from "./Room.vue";
+import Spectrum from "../components/entity/Spectrum.vue";
 
 export default {
-  components: {Graph, Weather, Header, Context, Pane, Group, Entity, Element},
+  components: {Spectrum, Room, Clock, Graph, Weather, Header, Context, Pane, Group, Entity, Element},
   data() {
     return {
       since: "",
       header: {
-        name: "Multi Controller",
+        name: "Bedroom",
         icon: "􀯱",
       },
       scenes: [
@@ -53,16 +56,7 @@ export default {
         return 0;
       }
 
-      if (!this.$root.session.metadata.entities) return []
-      this.$root.session.metadata.entities.forEach(e => {
-        if (e.state === null) return
-        if (!this.levels[e.id]) this.levels[e.id] = 0
-        if ((this.levels[e.id]) !== (e.state.level)) {
-          this.levels[e.id] = e.state.level
-        }
-      })
 
-      return this.$root.session.metadata.entities.sort(compare)
     }
   },
   methods: {
@@ -121,7 +115,13 @@ export default {
       if (!this.edit) return;
       event.preventDefault()
       event.target.classList.remove('dragover')
-    }
+    },
+    groupBy(xs, key) {
+      return xs.reduce(function (rv, x) {
+        (rv[x[key]] = rv[x[key]] || []).push(x);
+        return rv;
+      }, {});
+    },
   }
 }
 
@@ -129,76 +129,98 @@ export default {
 
 <template>
 
-  <div class="home gap w-100">
-    <div class="cluster gap my-2">
-      <Entity
-          v-for="entity in entities"
-          :id="entity.id"
-          :key="entity.id"
-          :draggable="this.edit"
-          :entity="entity"
-          small
-      ></Entity>
-      <Context class="" icon="􀺳" name="Multi">
-        <div class=" h-100 d-flex flex-row gap w-100 justify-content-center">
-          <div class="w-25"></div>
-          <div class="w-75">
-            <Header :target="header"></Header>
-            <div class="d-flex flex-column gap pt-2">
-              <div class="top context-container context-container-sm gap" v-on:click.stop>
-                <div class="v-bar element justify-content-between" style="width: 24.33rem;">
-                  <div class="h-bar justify-content-start align-items-center align-content-center pb-1">
-                    <div class="label-xxs label-o2 label-w600">􀛮</div>
-                    <div class="label-xxs label-o4 label-w500">&nbsp;&nbsp;Root</div>
-                    <div class="fill"></div>
-                    <div class="h-bar gap px-2">
-                      <div class="label-xxs label-o3">9%</div>
-                    </div>
-                  </div>
+  <div class="context-container context-container-sm d-flex gap-1 mt-1">
+    <div v-if="false" class="my-1" style="width: 22rem;">
+      <div class="notification">
+        <div class="icon">􀛮</div>
+        <div class="notification-header">
+          <div class="title">
+            Remote Proximity Alert
+          </div>
+          <div class="message">
+            Dr. QT Pi has arrived at your location.
+          </div>
+        </div>
+        <div class="time">8m ago</div>
+      </div>
+    </div>
 
-                  <div class="">
-                    <div>
-                      <input
-                          v-model="master"
-                          class="dock dock-small slider"
-                          max="100"
-                          min="0" step="5"
-                          type="range"
-                          @change="updateAll(master)">
-                    </div>
-                  </div>
+    <Entity v-for="(entity, k) in this.$root.entities"
+            :id="k"
+            :key="k"
+            :entity="entity"
+            small></Entity>
+    <!--    &ndash;&gt;
+        </div>-->
+    <!--    {{Object.values(this.$root.entities).map(o => ({name: o.name, attributes: o.attributes}))}}-->
+    <!--    <div class="element">
+          <Room></Room>
+        </div>
+        <Context class="" icon="􀺳" name="Multi">
+          <div class=" h-100 d-flex flex-row gap w-100 justify-content-center">
+            <div class="w-25"></div>
+            <div class="w-75">
+              <Header :target="header"></Header>
+              <div class="d-flex flex-column gap pt-2">
+                <div class="top context-container context-container-sm gap" v-on:click.stop>
+                  ddd
                 </div>
-                <Entity
-                    v-for="entity in entities"
-                    :id="entity.id"
-                    :key="entity.id"
-                    :draggable="this.edit"
-                    :entity="entity"
-                    :level="entity.state.level"
-                    power-level
-                ></Entity>
               </div>
             </div>
           </div>
-        </div>
-      </Context>
-    </div>
+        </Context>-->
+    <!--    <div class="cluster gap-1 mt-auto">
 
-    <div class="cluster gap my-2 ">
-      <div v-for="scene in this.scenes" class="surface">
-        <div class="h-bar justify-content-start align-items-center align-content-center">
-          <div class="label-xxs label-o2 label-w600">􀊄</div>
-          <div class="label-xxs label-o4 label-w500 px-1">&nbsp;&nbsp;{{ scene.name }}</div>
-        </div>
-      </div>
+    &lt;!&ndash;      <Context class="" icon="􀺳" name="Multi">
+            <div class=" h-100 d-flex flex-row gap w-100 justify-content-center">
+              <div class="w-25"></div>
+              <div class="w-75">
+                <Header :target="header"></Header>
+                <div class="d-flex flex-column gap pt-2">
+                  <div class="top context-container context-container-sm gap" v-on:click.stop>
+                    <div class="v-bar element justify-content-between" style="width: 24.33rem;">
+                      <div class="h-bar justify-content-start align-items-center align-content-center pb-1">
+                        <div class="label-xxs label-o2 label-w600">􀛮</div>
+                        <div class="label-xxs label-o4 label-w500">&nbsp;&nbsp;Root</div>
+                        <div class="fill"></div>
+                        <div class="h-bar gap px-2">
+                          <div class="label-xxs label-o3">9%</div>
+                        </div>
+                      </div>
 
-    </div>
+                      <div class="">
+                        <div>
+                          <input
+                              v-model="master"
+                              class="dock dock-small slider"
+                              max="100"
+                              min="0" step="5"
+                              type="range"
+                              @change="updateAll(master)">
+                        </div>
+                      </div>
+                    </div>
+                    <Entity
+                        v-for="entity in entities"
+                        :id="entity.id"
+                        :key="entity.id"
+                        :draggable="this.edit"
+                        :entity="entity"
+                        :level="entity.state.level"
+                        power-level
+                    ></Entity>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </Context>&ndash;&gt;
+        </div>-->
+
 
   </div>
 </template>
 
 <style>
-.orange {
-  color: rgb(255, 95, 31);
-}
+
+
 </style>

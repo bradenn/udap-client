@@ -49,6 +49,7 @@ export default {
         error: {}
       },
       entities: {},
+      attributes: {},
       session: {
         token: "unset",
         subscriptions: [],
@@ -112,7 +113,7 @@ export default {
       localStorage.setItem("context", str)
     },
     isConfig() {
-      if(localStorage.getItem("context") === null) {
+      if (localStorage.getItem("context") === null) {
         this.saveConfig()
         this.$router.push("/")
       }
@@ -122,9 +123,9 @@ export default {
 
       let obj = JSON.parse(cnf);
 
-      if(obj.preferences != null) this.preferences = obj.preferences
-      if(obj.config != null) this.config = obj.config
-      if(obj.session != null) this.session = obj.session
+      if (obj.preferences != null) this.preferences = obj.preferences
+      if (obj.config != null) this.config = obj.config
+      if (obj.session != null) this.session = obj.session
       let str = JSON.stringify(obj)
       localStorage.setItem("context", str)
     },
@@ -167,7 +168,7 @@ export default {
       this.connection.websocket.send(JSON.stringify({
             target: target,
             operation: operation,
-            payload: body,
+            payload: JSON.stringify(body),
             id: id
           }
       ));
@@ -253,17 +254,26 @@ export default {
       this.accepting = true
       let data = JSON.parse(event.data)
       if (!data) console.log("Invalid JSON received")
+      this.state.last = new Date()
       switch (data.operation) {
         case "metadata":
-          this.state.last = new Date()
-            this.state.waiting = false
+          this.state.waiting = false
           this.session.metadata = data.body
+          break
+        case "entity":
+          this.state.waiting = false
+          this.entities[data.body.id] = data.body
+          break
+        case "attribute":
+          this.state.waiting = false
+          this.attributes[data.body.entity + data.body.key] = data.body
           break
         default:
           console.log(data);
       }
       this.accepting = false
     },
+
     onClose(event) {
       this.connection.connecting = false
       this.connection.connected = false
@@ -284,57 +294,12 @@ export default {
     <router-view/>
 
     <Context :open="!!this.state.error">
-      {{this.state.error}}
+      {{ this.state.error }}
     </Context>
     <SimpleKeyboard v-if="state.keyboard" :input="this.state.input"></SimpleKeyboard>
   </div>
 </template>
 
 <style lang="scss">
-@import "/scss/app";
 
-.element {
-  @extend .bg-blur;
-  box-shadow: 0 0 12px 2px rgb(0 0 0 / 20%);
-  transition: background-color 100ms ease, backdrop-filter 500ms ease;
-}
-
-.window {
-  @extend .surface;
-}
-
-.root {
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 100vw;
-  height: 100vh;
-  overflow: hidden;
-  border-radius: 1rem 1rem 1rem 1rem !important;
-}
-
-.backdrop {
-
-  z-index: -2 !important;
-  top: 0;
-  left: 0;
-  overflow: hidden;
-  position: absolute;
-  object-fit: cover;
-  width: 100vw;
-
-  height: 100vh;
-  animation: switch 0.25s ease-in-out;
-}
-
-@keyframes switch {
-  from {
-    filter: blur(4px);
-    opacity: 0.8;
-  }
-  to {
-    filter: blur(0px);
-    opacity: 1;
-  }
-}
 </style>

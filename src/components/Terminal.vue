@@ -15,6 +15,7 @@ export default {
       isDragging: false,
       context: false,
       verified: false,
+      distance: 0,
       dragA: {x: 0, y: 0}
     }
   },
@@ -34,11 +35,17 @@ export default {
     timeout() {
       if (this.isDragging) {
         this.verified = true
-
       }
     },
     dragContinue(e) {
-
+      if (this.verified) {
+        let dragB = {x: e.clientX, y: e.clientY}
+        this.distance = (this.dragA.y - dragB.y)/70
+        if (this.dragA.y - dragB.y > 70) {
+          this.verified = false
+          this.goHome()
+        }
+      }
     },
     goRight() {
       if (this.page + 1 <= 4) {
@@ -52,6 +59,9 @@ export default {
         /*      this.$router.replace(this.pages[this.page])*/
       }
     },
+    goHome() {
+      this.$router.replace("/")
+    },
     dragStart(e) {
       this.isDragging = true;
       let a = {x: e.clientX, y: e.clientY}
@@ -59,18 +69,12 @@ export default {
         /*  this.context = !this.context*/
       }
       this.dragA = a
-      setTimeout(this.timeout, 300)
+      setTimeout(this.timeout, 100)
     },
     dragStop(e) {
       this.isDragging = false;
-      if (this.verified) {
-        let dragB = {x: e.clientX, y: e.clientY}
-        if (dragB.x > this.dragA.x) {
-          this.goLeft()
-        } else {
-          this.goRight()
-        }
-      }
+      this.distance = 0;
+      this.verified = false;
       this.dragA = {x: 0, y: 0}
     }
   },
@@ -79,19 +83,17 @@ export default {
 
 <template>
 
-  <div class="terminal" v-on:mousedown="dragStart" v-on:mousemove="dragContinue" v-on:mouseup="dragStop">
+  <div class="terminal h-100"  v-on:mousedown="dragStart" v-on:mousemove="dragContinue" v-on:mouseup="dragStop">
 
     <div class="generic-container">
-
       <div class="generic-slot-sm">
-        <Clock></Clock>
+        <Clock inner></Clock>
       </div>
-
       <div class="generic-slot-sm">
         <StatusWidget></StatusWidget>
       </div>
-
     </div>
+
     <div class="h-100">
       <router-view v-slot="{ Component }">
         <transition :name="transitionName" mode="out-in">
@@ -99,18 +101,29 @@ export default {
         </transition>
       </router-view>
     </div>
-
+    <div class="footer mt-3">
+      <div class="position-absolute" style="left:1rem;">
+        <div class="label-xxs label-o4 label-w600 lh-1">Udap v1.2.3</div>
+        <div class="label-ys label-o2 label-w500 lh-1">Development Build #</div>
+      </div>
+      <Dock os>
+        <div class="macro-icon">
+          <div class="macro-icon-default" @click="this.$router.push('/terminal/apps/media')">􀑪</div>
+        </div>
+        <div class="macro-icon">
+          <div class="macro-icon-default">􀟼</div>
+        </div><div class="macro-icon">
+          <div class="macro-icon-default" @click="this.$router.push('/terminal/settings/endpoint')">􀍟</div>
+        </div>
+      </Dock>
+    </div>
+    <div class="home-bar top" :style="`transform: translateY(calc(-${distance}rem)); opacity: calc(1-${distance});`" v-if="this.verified"></div>
   </div>
 
 </template>
 
 <style lang="scss">
 
-.terminal {
-  padding: 1em;
-  height: 100vh !important;
-  overflow: no-display;
-}
 
 .bar {
   position: relative;

@@ -10,6 +10,7 @@ import Entities from "./views/settings/Entities.vue";
 import Shell from "./views/Shell.vue";
 import Whiteboard from "./components/apps/Whiteboard.vue";
 import Network from "./views/settings/Network.vue";
+import Media from "./components/apps/Media.vue";
 
 const routes = [
     {
@@ -27,8 +28,14 @@ const routes = [
                 path: '/terminal/apps/whiteboard',
                 name: 'Whiteboard',
                 component: Whiteboard,
-                icon: 'bi-display',
-                sf: '􀏒',
+                icon: '􀏒',
+                meta: {slideOrder: 4},
+            },
+            {
+                path: '/terminal/apps/media',
+                name: 'Media',
+                component: Media,
+                icon: '􀑪',
                 meta: {slideOrder: 4},
             },
             {

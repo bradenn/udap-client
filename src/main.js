@@ -4,6 +4,7 @@ import Root from './Root.vue'
 import axios from 'axios';
 
 import Element from "./components/Element.vue";
+import style from "/scss/app.scss";
 import Dock from "./components/Dock.vue";
 import Selector from "./components/Selector.vue";
 import Pane from "./components/Pane.vue";
