@@ -17,7 +17,8 @@ export default {
       rotation: 0,
     }
   },
-  watch: {},
+  watch: {
+  },
   created() {
     setInterval(this.tick, 100)
   },
@@ -28,7 +29,7 @@ export default {
         this.focus = "wait"
         return
       }
-      let n = Math.round(((new Date() - new Date(this.$root.state.last)) / 3000) * 100)
+      let n = Math.round(((new Date() - new Date(this.$root.state.last)) / 2000) * 100)
       if (n >= 150) {
         this.focus = "lapse"
       } else if (Math.abs(n - this.progress) >= 25) {
@@ -79,15 +80,12 @@ export default {
 
 <template>
   <div class="top mb-2">
-    <Dock class="top justify-content-start">
+    <div class="element d-flex justify-content-center" style="width: 3rem;">
       <div class="focus-container px-1 " @click="hardReload">
         <div class="focus-inner label-o2" :class="`focus-animate-${this.focus}`">􀝝</div>
         <div  class="focus-outer label-o4">􀝝</div>
       </div>
-      <div class="mx-1"
-           style="border-right: 1px solid rgba(255, 255, 255, 0.06); width: 1px; height:24px; border-radius: 1px;">
-      </div>
-    </Dock>
+    </div>
   </div>
 
 

@@ -48,8 +48,8 @@ export default {
         websocket: undefined,
         error: {}
       },
-      entities: {},
-      attributes: {},
+      entities: [],
+      attributes: [],
       session: {
         token: "unset",
         subscriptions: [],
@@ -262,11 +262,19 @@ export default {
           break
         case "entity":
           this.state.waiting = false
-          this.entities[data.body.id] = data.body
+            if(this.entities.find(e => e.id === data.body.id)) {
+              this.entities = this.entities.map(a => a.id === data.body.id?data.body:a)
+            }else{
+              this.entities.push(data.body)
+            }
           break
         case "attribute":
           this.state.waiting = false
-          this.attributes[data.body.entity + data.body.key] = data.body
+          if(this.attributes.find(e => e.id === data.body.id)) {
+            this.attributes = this.attributes.map(a => a.id === data.body.id?data.body:a)
+          }else{
+            this.attributes.push(data.body)
+          }
           break
         default:
           console.log(data);

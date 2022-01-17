@@ -145,12 +145,11 @@ export default {
       </div>
     </div>
 
-    <Entity v-for="(entity, k) in this.$root.entities"
-            :id="k"
-            :key="k"
-            :entity="entity"
-            small></Entity>
-    <!--    &ndash;&gt;
+    <div class="context-container context-container-sm cluster gap">
+    <Entity v-for="entity in this.$root.entities" :id="entity.id" :key="entity.id" :entity="entity" small></Entity>
+    </div>
+<!--    -->
+    <!--  &gt;
         </div>-->
     <!--    {{Object.values(this.$root.entities).map(o => ({name: o.name, attributes: o.attributes}))}}-->
     <!--    <div class="element">
@@ -171,7 +170,7 @@ export default {
         </Context>-->
     <!--    <div class="cluster gap-1 mt-auto">
 
-    &lt;!&ndash;      <Context class="" icon="􀺳" name="Multi">
+    &lt;!      <Context class="" icon="􀺳" name="Multi">
             <div class=" h-100 d-flex flex-row gap w-100 justify-content-center">
               <div class="w-25"></div>
               <div class="w-75">
@@ -213,7 +212,7 @@ export default {
                 </div>
               </div>
             </div>
-          </Context>&ndash;&gt;
+          </Context>&gt;
         </div>-->
 
 

@@ -10,6 +10,7 @@ export default {
     return {
       pages: ["/terminal/home", "/terminal/apps", "/terminal/shell", "/terminal/settings"],
       page: 0,
+      sys: this.$root.session.metadata.system,
       headerScale: "lg",
       transitionName: 'slide-left',
       isDragging: false,
@@ -40,8 +41,9 @@ export default {
     dragContinue(e) {
       if (this.verified) {
         let dragB = {x: e.clientX, y: e.clientY}
-        this.distance = (this.dragA.y - dragB.y)/70
-        if (this.dragA.y - dragB.y > 70) {
+        let delta = 100
+        this.distance = (this.dragA.y - dragB.y)/delta
+        if (this.dragA.y - dragB.y > delta) {
           this.verified = false
           this.goHome()
         }
@@ -89,7 +91,7 @@ export default {
       <div class="generic-slot-sm">
         <Clock inner></Clock>
       </div>
-      <div class="generic-slot-sm">
+      <div class="generic-slot-sm d-flex justify-content-end">
         <StatusWidget></StatusWidget>
       </div>
     </div>
@@ -103,21 +105,21 @@ export default {
     </div>
     <div class="footer mt-3">
       <div class="position-absolute" style="left:1rem;">
-        <div class="label-xxs label-o4 label-w600 lh-1">Udap v1.2.3</div>
-        <div class="label-ys label-o2 label-w500 lh-1">Development Build #</div>
+        <div class="label-xxs label-o4 label-w600 lh-1 text-lowercase">{{sys.name}} v{{sys.version}}</div>
+        <div class="label-ys label-o2 label-w500 lh-1">{{sys.environment}} build</div>
       </div>
       <Dock os>
         <div class="macro-icon">
           <div class="macro-icon-default" @click="this.$router.push('/terminal/apps/media')">􀑪</div>
         </div>
         <div class="macro-icon">
-          <div class="macro-icon-default">􀟼</div>
+          <div class="macro-icon-default" @click="this.$router.push('/terminal/apps/room')">􀟼</div>
         </div><div class="macro-icon">
           <div class="macro-icon-default" @click="this.$router.push('/terminal/settings/endpoint')">􀍟</div>
         </div>
       </Dock>
     </div>
-    <div class="home-bar top" :style="`transform: translateY(calc(-${distance}rem)); opacity: calc(1-${distance});`" v-if="this.verified"></div>
+    <div class="home-bar top" :style="`transform: translateY(calc(-${distance}rem));`"></div>
   </div>
 
 </template>
