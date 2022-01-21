@@ -2,9 +2,10 @@
 import Dock from "./Dock.vue";
 import App from "./App.vue";
 import Loading from "./Loading.vue";
+import Media from "./apps/Media.vue";
 
 export default {
-  components: {Loading, Dock, App},
+  components: {Media, Loading, Dock, App},
   data() {
     return {
       uptime: "",
@@ -79,7 +80,10 @@ export default {
 
 
 <template>
-  <div class="top mb-2">
+  <div class="top mb-2 d-flex gap align-items-center">
+    <div style="width: 14rem;">
+     <Media small></Media>
+    </div>
     <div class="element d-flex justify-content-center" style="width: 3rem;">
       <div class="focus-container px-1 " @click="hardReload">
         <div class="focus-inner label-o2" :class="`focus-animate-${this.focus}`">􀝝</div>

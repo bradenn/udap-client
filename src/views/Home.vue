@@ -129,7 +129,7 @@ export default {
 
 <template>
 
-  <div class="context-container context-container-sm d-flex gap-1 mt-1">
+  <div class="context-container d-flex gap-1 mt-1">
     <div v-if="false" class="my-1" style="width: 22rem;">
       <div class="notification">
         <div class="icon">􀛮</div>
@@ -144,8 +144,8 @@ export default {
         <div class="time">8m ago</div>
       </div>
     </div>
-
-    <div class="context-container context-container-sm cluster gap">
+<!--    <Weather></Weather>-->
+    <div class="context-container-lg cluster gap">
     <Entity v-for="entity in this.$root.entities" :id="entity.id" :key="entity.id" :entity="entity" small></Entity>
     </div>
 <!--    -->

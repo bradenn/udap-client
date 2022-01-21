@@ -50,6 +50,8 @@ export default {
       },
       entities: [],
       attributes: [],
+      devices: [],
+      networks: [],
       session: {
         token: "unset",
         subscriptions: [],
@@ -261,7 +263,6 @@ export default {
           this.session.metadata = data.body
           break
         case "entity":
-          this.state.waiting = false
             if(this.entities.find(e => e.id === data.body.id)) {
               this.entities = this.entities.map(a => a.id === data.body.id?data.body:a)
             }else{
@@ -269,11 +270,24 @@ export default {
             }
           break
         case "attribute":
-          this.state.waiting = false
           if(this.attributes.find(e => e.id === data.body.id)) {
             this.attributes = this.attributes.map(a => a.id === data.body.id?data.body:a)
           }else{
             this.attributes.push(data.body)
+          }
+          break
+        case "device":
+          if(this.devices.find(e => e.id === data.body.id)) {
+            this.devices = this.devices.map(a => a.id === data.body.id?data.body:a)
+          }else{
+            this.devices.push(data.body)
+          }
+          break
+        case "network":
+          if(this.networks.find(e => e.id === data.body.id)) {
+            this.networks = this.networks.map(a => a.id === data.body.id?data.body:a)
+          }else{
+            this.networks.push(data.body)
           }
           break
         default:
@@ -281,7 +295,6 @@ export default {
       }
       this.accepting = false
     },
-
     onClose(event) {
       this.connection.connecting = false
       this.connection.connected = false

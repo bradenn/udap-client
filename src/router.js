@@ -1,15 +1,13 @@
 import {createRouter, createWebHistory} from "vue-router";
 import Home from "./views/Home.vue"
-import Apps from "./views/Apps.vue"
-import Terminal from "./components/Terminal.vue";
+import Terminal from "./views/Terminal.vue";
 import Register from "./views/Register.vue";
 import Settings from "./views/Settings.vue";
 import Endpoint from "./views/settings/Endpoint.vue";
 import Connection from "./views/settings/Connection.vue";
 import Entities from "./views/settings/Entities.vue";
-import Shell from "./views/Shell.vue";
 import Whiteboard from "./components/apps/Whiteboard.vue";
-import Network from "./views/settings/Network.vue";
+import Network from "./views/Network.vue";
 import Media from "./components/apps/Media.vue";
 import Room from "./views/Room.vue";
 
@@ -33,6 +31,13 @@ const routes = [
                 meta: {slideOrder: 4},
             },
             {
+                path: '/terminal/network',
+                name: 'Network',
+                component: Network,
+                icon: '􀏒',
+                meta: {slideOrder: 4},
+            },
+            {
                 path: '/terminal/apps/media',
                 name: 'Media',
                 component: Media,
@@ -51,18 +56,6 @@ const routes = [
                 name: 'Home',
                 component: Home,
                 meta: {slideOrder: 0}
-            },
-            {
-                path: '/terminal/apps',
-                name: 'Apps',
-                component: Apps,
-                meta: {slideOrder: 2},
-            },
-            {
-                path: '/terminal/shell',
-                name: 'Shell',
-                component: Shell,
-                meta: {slideOrder: 3}
             },
             {
                 path: '/terminal/settings',
@@ -95,14 +88,6 @@ const routes = [
                         component: Connection,
                         meta: {slideOrder: 4},
                     },
-                    {
-                        path: '/terminal/settings/network',
-                        name: 'Network',
-                        icon: 'bi-diagram-3',
-                        sf: '􀤆',
-                        component: Network,
-                        meta: {slideOrder: 4},
-                    }
                 ]
             },
 

@@ -14,7 +14,7 @@ export default {
       advanced: false,
       blurs: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
       padding: [1, 2, 3, 4, 5, 6, 7, 8],
-      backgrounds: ["bells", "viridian", "nerfdart", "nasa", "milk", "startrail"],
+      backgrounds: ["bells", "viridian", "nerfdart", "nasa", "milk", "hole"],
       colors: [
         {name: "Slate", cls: "accent-slate"},
         {name: "Red", cls: "accent-red"},
@@ -85,7 +85,7 @@ export default {
             {name: "Milk", value: "milk"},
             {name: "Nerfdart", value: "nerfdart"},
             {name: "Daemon", value: "daemon"},
-            {name: "Star Trail", value: "startrail"}]
+            {name: "Black Hole", value: "cblue"}]
         },
         blur: {
           name: "Blur",

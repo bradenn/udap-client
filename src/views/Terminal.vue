@@ -1,8 +1,8 @@
 <script>
-import Dock from "./Dock.vue";
-import StatusWidget from "./Hub.vue";
-import Clock from "./Clock.vue";
-import Group from "./Group.vue";
+import Dock from "../components/Dock.vue";
+import StatusWidget from "../components/Hub.vue";
+import Clock from "../components/Clock.vue";
+import Group from "../components/Group.vue";
 
 export default {
   components: {Group, Dock, StatusWidget, Clock},
@@ -65,13 +65,15 @@ export default {
       this.$router.replace("/")
     },
     dragStart(e) {
-      this.isDragging = true;
       let a = {x: e.clientX, y: e.clientY}
-      if (a.y < 64) {
+
+      if ((window.screen.availHeight - e.screenY) <= 74) {
         /*  this.context = !this.context*/
+        this.isDragging = true;
+        this.dragA = a
+        setTimeout(this.timeout, 100)
       }
-      this.dragA = a
-      setTimeout(this.timeout, 100)
+
     },
     dragStop(e) {
       this.isDragging = false;
@@ -110,11 +112,25 @@ export default {
       </div>
       <Dock os>
         <div class="macro-icon">
-          <div class="macro-icon-default" @click="this.$router.push('/terminal/apps/media')">􀑪</div>
+          <div class="macro-icon-default" @click="this.$router.push('/terminal/home')">􀎟</div>
         </div>
         <div class="macro-icon">
           <div class="macro-icon-default" @click="this.$router.push('/terminal/apps/room')">􀟼</div>
-        </div><div class="macro-icon">
+        </div>
+        <span class="mx-2 my-1"
+              style="width: 0.0255rem; height: 1.8rem; border-radius: 1rem; background-color: rgba(255,255,255,0.1);"></span>
+        <div class="macro-icon">
+          <div class="macro-icon-default" @click="this.$router.push('/terminal/apps/media')">􀑪</div>
+        </div>
+
+        <div class="macro-icon">
+          <div class="macro-icon-default" @click="this.$router.push('/terminal/apps/whiteboard')">􀤳</div>
+        </div>
+
+        <div class="macro-icon">
+          <div class="macro-icon-default" @click="this.$router.push('/terminal/network/')">􁅏</div>
+        </div>
+        <div class="macro-icon">
           <div class="macro-icon-default" @click="this.$router.push('/terminal/settings/endpoint')">􀍟</div>
         </div>
       </Dock>
