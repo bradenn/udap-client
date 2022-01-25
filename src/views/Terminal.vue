@@ -10,6 +10,10 @@ export default {
     return {
       pages: ["/terminal/home", "/terminal/apps", "/terminal/shell", "/terminal/settings"],
       page: 0,
+      media: {
+        entity: {},
+        attributes: {},
+      },
       sys: this.$root.session.metadata.system,
       headerScale: "lg",
       transitionName: 'slide-left',
@@ -26,10 +30,17 @@ export default {
     this.transitionName = toDepth < fromDepth ? 'slide-right' : 'slide-left'
     next()
   },
-  watch: {},
-  created() {
+  watch: {
+
+  },
+  beforeMount() {
+
+  },
+  computed: {
+
   },
   methods: {
+
     showContext() {
       this.context = true
     },
@@ -45,6 +56,7 @@ export default {
         this.distance = (this.dragA.y - dragB.y)/delta
         if (this.dragA.y - dragB.y > delta) {
           this.verified = false
+          this.distance = 0
           this.goHome()
         }
       }
@@ -87,8 +99,7 @@ export default {
 
 <template>
 
-  <div class="terminal h-100"  v-on:mousedown="dragStart" v-on:mousemove="dragContinue" v-on:mouseup="dragStop">
-
+  <div class="terminal h-100 " v-on:mousedown="dragStart" v-on:mousemove="dragContinue" v-on:mouseup="dragStop">
     <div class="generic-container">
       <div class="generic-slot-sm">
         <Clock inner></Clock>
@@ -98,13 +109,14 @@ export default {
       </div>
     </div>
 
-    <div class="h-100">
-      <router-view v-slot="{ Component }">
+    <div class="h-100" >
+      <router-view v-slot="{ Component }" :style="`transform: translateY(calc(-${distance}rem));`">
         <transition :name="transitionName" mode="out-in">
-          <component :is="Component" class="child-view"/>
+          <component :is="Component" class="child-view"  />
         </transition>
       </router-view>
     </div>
+
     <div class="footer mt-3">
       <div class="position-absolute" style="left:1rem;">
         <div class="label-xxs label-o4 label-w600 lh-1 text-lowercase">{{sys.name}} v{{sys.version}}</div>
@@ -112,30 +124,32 @@ export default {
       </div>
       <Dock os>
         <div class="macro-icon">
-          <div class="macro-icon-default" @click="this.$router.push('/terminal/home')">􀎟</div>
+          <router-link class="macro-icon-default" to="/terminal/home" draggable="false">􀎟</router-link>
         </div>
         <div class="macro-icon">
-          <div class="macro-icon-default" @click="this.$router.push('/terminal/apps/room')">􀟼</div>
+          <router-link class="macro-icon-default" to="/terminal/apps/room" draggable="false">􀟼</router-link>
         </div>
         <span class="mx-2 my-1"
               style="width: 0.0255rem; height: 1.8rem; border-radius: 1rem; background-color: rgba(255,255,255,0.1);"></span>
         <div class="macro-icon">
-          <div class="macro-icon-default" @click="this.$router.push('/terminal/apps/media')">􀑪</div>
+          <router-link class="macro-icon-default" to="/terminal/apps/media" draggable="false">􀑪</router-link>
         </div>
 
         <div class="macro-icon">
-          <div class="macro-icon-default" @click="this.$router.push('/terminal/apps/whiteboard')">􀤳</div>
+          <router-link class="macro-icon-default" to="/terminal/apps/whiteboard" draggable="false">􀤳</router-link>
         </div>
 
         <div class="macro-icon">
-          <div class="macro-icon-default" @click="this.$router.push('/terminal/network/')">􁅏</div>
+          <router-link class="macro-icon-default" to="/terminal/network/" draggable="false">􁅏</router-link>
         </div>
         <div class="macro-icon">
-          <div class="macro-icon-default" @click="this.$router.push('/terminal/settings/endpoint')">􀍟</div>
+          <router-link class="macro-icon-default" to="/terminal/settings/endpoint" draggable="false">􀍟</router-link>
         </div>
       </Dock>
     </div>
-    <div class="home-bar top" :style="`transform: translateY(calc(-${distance}rem));`"></div>
+
+    <div class="home-bar top"></div>
+
   </div>
 
 </template>
@@ -155,10 +169,6 @@ export default {
   border-radius: 0;
 }
 
-.sf {
-  font-family: 'SF Pro Display', sans-serif;
-  font-weight: 400 !important;
-}
 
 .profile {
 

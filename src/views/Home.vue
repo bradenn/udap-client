@@ -10,9 +10,10 @@ import Graph from "../components/Graph.vue";
 import Clock from "../components/Clock.vue";
 import Room from "./Room.vue";
 import Spectrum from "../components/entity/Spectrum.vue";
+import Proc from "../components/Proc.vue";
 
 export default {
-  components: {Spectrum, Room, Clock, Graph, Weather, Header, Context, Pane, Group, Entity, Element},
+  components: {Proc, Spectrum, Room, Clock, Graph, Weather, Header, Context, Pane, Group, Entity, Element},
   data() {
     return {
       since: "",
@@ -49,15 +50,19 @@ export default {
 
     entities: function () {
       function compare(a, b) {
-        if (a.name < b.name)
+        if (a.order < b.order)
           return -1;
-        if (a.name > b.name)
+        if (a.order > b.order)
           return 1;
         return 0;
       }
 
+      return this.$root.entities.sort(compare)
 
     }
+  },
+  mounted() {
+
   },
   methods: {
     updateAll(e) {
@@ -122,14 +127,15 @@ export default {
         return rv;
       }, {});
     },
+
   }
 }
 
 </script>
 
 <template>
-
-  <div class="context-container d-flex gap-1 mt-1">
+<div>
+  <div class="d-flex gap-1 mt-1">
     <div v-if="false" class="my-1" style="width: 22rem;">
       <div class="notification">
         <div class="icon">􀛮</div>
@@ -144,11 +150,17 @@ export default {
         <div class="time">8m ago</div>
       </div>
     </div>
-<!--    <Weather></Weather>-->
-    <div class="context-container-lg cluster gap">
-    <Entity v-for="entity in this.$root.entities" :id="entity.id" :key="entity.id" :entity="entity" small></Entity>
+    <!--    <Weather></Weather>-->
+
+
+    <div class="cluster gap">
+      <div v-for="entity in entities" :key="entity.id">
+        <Entity :id="entity.id" :key="entity.id" :entity="entity" small></Entity>
+
+      </div>
     </div>
-<!--    -->
+
+    <!--    -->
     <!--  &gt;
         </div>-->
     <!--    {{Object.values(this.$root.entities).map(o => ({name: o.name, attributes: o.attributes}))}}-->
@@ -217,6 +229,8 @@ export default {
 
 
   </div>
+
+</div>
 </template>
 
 <style>

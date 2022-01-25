@@ -5,7 +5,7 @@ import Register from "./views/Register.vue";
 import Settings from "./views/Settings.vue";
 import Endpoint from "./views/settings/Endpoint.vue";
 import Connection from "./views/settings/Connection.vue";
-import Entities from "./views/settings/Entities.vue";
+import Entities from "./views/settings/Endpoints.vue";
 import Whiteboard from "./components/apps/Whiteboard.vue";
 import Network from "./views/Network.vue";
 import Media from "./components/apps/Media.vue";

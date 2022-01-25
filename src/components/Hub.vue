@@ -3,9 +3,10 @@ import Dock from "./Dock.vue";
 import App from "./App.vue";
 import Loading from "./Loading.vue";
 import Media from "./apps/Media.vue";
+import Proc from "./Proc.vue";
 
 export default {
-  components: {Media, Loading, Dock, App},
+  components: {Proc, Media, Loading, Dock, App},
   data() {
     return {
       uptime: "",
@@ -18,8 +19,7 @@ export default {
       rotation: 0,
     }
   },
-  watch: {
-  },
+  watch: {},
   created() {
     setInterval(this.tick, 100)
   },
@@ -52,14 +52,14 @@ export default {
       window.location.reload()
     },
     recalculateFocus() {
-    /*  this.focus = `transform: scale(calc(0.50 + ${this.$root.state.accepting ? '0.50' : (Math.random() * 0.125)})) perspective(2rem);`*/
+      /*  this.focus = `transform: scale(calc(0.50 + ${this.$root.state.accepting ? '0.50' : (Math.random() * 0.125)})) perspective(2rem);`*/
     },
     state() {
-      if(this.focus==='lapse' || !this.$root.connection.connected) {
+      if (this.focus === 'lapse' || !this.$root.connection.connected) {
         return 'focus-animate-lapse'
-      }else if (this.$root.state.waiting) {
+      } else if (this.$root.state.waiting) {
         return 'focus-animate-active'
-      }else{
+      } else {
         return 'focus-animate-idle'
       }
     },
@@ -80,14 +80,16 @@ export default {
 
 
 <template>
-  <div class="top mb-2 d-flex gap align-items-center">
-    <div style="width: 14rem;">
-     <Media small></Media>
+  <div class="top d-flex justify-content-start align-items-center gap-1">
+    <div class="element">
+      <Media small></Media>
     </div>
-    <div class="element d-flex justify-content-center" style="width: 3rem;">
+    <div class="element d-flex align-items-center justify-content-center" style="width: 100%;">
+      <Proc></Proc>
+      <div class="v-sep"></div>
       <div class="focus-container px-1 " @click="hardReload">
-        <div class="focus-inner label-o2" :class="`focus-animate-${this.focus}`">􀝝</div>
-        <div  class="focus-outer label-o4">􀝝</div>
+        <div :class="`focus-animate-${this.focus}`" class="focus-inner label-o2">􀝝</div>
+        <div class="focus-outer label-o4">􀝝</div>
       </div>
     </div>
   </div>
@@ -96,6 +98,12 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-
+.v-sep {
+  height: 1.5rem;
+  width: 1px;
+  margin-inline: 0.5rem;
+  border-radius: 1rem !important;
+  background-color: rgba(255, 255, 255, 0.125)
+}
 
 </style>

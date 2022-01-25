@@ -1,13 +1,9 @@
 <script>
 import Dock from "../../components/Dock.vue";
-import Pane from "../../components/Pane.vue";
-import Group from "../../components/Group.vue";
-import Selector from "../../components/Selector.vue";
-import Option from "../../components/Option.vue";
 
 
 export default {
-  components: {Option, Selector, Pane, Dock, Group},
+  components: {Dock},
   data() {
     return {
       loaded: false,
@@ -131,20 +127,17 @@ export default {
 </script>
 
 <template>
-  <div class="d-flex flex-column gap">
-    <div class="context-container gap flex-shrink-1">
-      <div class="d-flex justify-content-between align-items-end align-content-end" v-on:click.stop>
+  <div class="d-flex flex-column context-container w-100">
+    <div class="context-container">
+      <div class="d-flex justify-content-between align-items-end align-content-end mb-1" v-on:click.stop>
         <div class="label-xxl label-w600 label-o5">
           <span class="label-xl label-w600 label-o4">􀏞</span>
           <span class="label-xl label-w600 label-o6 px-2">Endpoint</span>
         </div>
-        <div class="h-bar flex-shrink-1">
-          <div class="label-sm label-w600 label-o3 px-2 text-capitalize" @click="toggleAdvanced">
-            <span v-if="advanced">􁅦</span> <span v-else>􀍟</span>
-          </div>
-        </div>
       </div>
-      <div v-for="attribute in Object.values(this.session).filter(o => !o.advanced)"
+    </div>
+    <div class="frame-container">
+      <div v-for="attribute in Object.values(this.session)"
            :key="attribute.key"
            class="element" v-on:click.stop>
         <div class="h-bar justify-content-start align-items-center align-content-center pb-1">
@@ -155,46 +148,14 @@ export default {
             <div class="label-xxs label-o3">{{ attribute.value }} {{ attribute.range.unit }}</div>
           </div>
         </div>
-        <div class="d-flex gap">
+        <div class="d-flex gap ">
           <input v-if="attribute.type==='range'" :key="attribute.key"
                  v-model="attribute.value"
                  :class="`${attribute.range.cls}`"
                  :max="attribute.range.max"
                  :min="attribute.range.min" :step="attribute.range.step"
                  :style="attribute.key==='level'?`background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, 100%);`:''"
-                 class="dock dock-small slider"
-                 type="range"
-                 @mousemove="this.$root.preferences[attribute.key] = attribute.value">
-          <Dock v-else-if="attribute.type==='select'" class="surface w-100" small>
-            <div v-for="option in attribute.options"
-                 :class="`${attribute.value === option.value?'router-link-active':''}`"
-                 class="dock-link"
-                 href="#" @click="this.$root.preferences[attribute.key] = option.value">
-              {{ option.name }}
-            </div>
-          </Dock>
-
-        </div>
-      </div>
-      <div v-if="advanced" v-for="attribute in Object.values(this.session).filter(o => o.advanced)"
-           :key="attribute.key"
-           class="element" v-on:click.stop>
-        <div class="h-bar justify-content-start align-items-center align-content-center pb-1">
-          <div class="label-xxs label-o2 label-w600">{{ attribute.icon }}</div>
-          <div class="label-xxs label-o4 label-w500">&nbsp;&nbsp;{{ attribute.name }}</div>
-          <div class="fill"></div>
-          <div v-if="attribute.range" class="h-bar gap label-xxs label-o3 label-w400 px-2">
-            <div class="label-xxs label-o3">{{ attribute.value }} {{ attribute.range.unit }}</div>
-          </div>
-        </div>
-        <div class="d-flex gap">
-          <input v-if="attribute.type==='range'" :key="attribute.key"
-                 v-model="attribute.value"
-                 :class="`${attribute.range.cls}`"
-                 :max="attribute.range.max"
-                 :min="attribute.range.min" :step="attribute.range.step"
-                 :style="attribute.key==='level'?`background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, 100%);`:''"
-                 class="dock dock-small slider"
+                 class=" slider element surface"
                  type="range"
                  @mousemove="this.$root.preferences[attribute.key] = attribute.value">
           <Dock v-else-if="attribute.type==='select'" class="surface w-100" small>
@@ -213,7 +174,16 @@ export default {
 </template>
 
 <style lang="scss" scoped>
+.frame-container .element {
 
+}
+
+.frame-container {
+  display: grid;
+  width: 100%;
+  gap: 0.375rem;
+  grid-template-columns: repeat(auto-fit, minmax(22rem, 1fr));
+}
 
 .option-grid {
   display: grid;
