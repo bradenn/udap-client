@@ -44,9 +44,6 @@ export default {
       }
 
     },
-    poll() {
-      this.$root.requestId("endpoint", "metadata", this.$root.session.metadata.endpoint.id, {});
-    },
     hardReload() {
       this.$root.state.waiting = true
       window.location.reload()

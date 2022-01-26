@@ -101,6 +101,7 @@ export default {
   computed: {
     media: function () {
       let entity = this.entities.find(e => e.type === 'media')
+      if(entity !== null) return {entity: null, attributes: []}
       let attrs = this.attributes.filter(e => e.entity === entity.id)
       return {
         entity: entity,
