@@ -28,7 +28,6 @@ export default {
     },
     success(result) {
       this.$root.session.token = result.data.token
-      this.$root.connect()
       this.$router.push("/terminal/home")
     },
     rejected(result) {

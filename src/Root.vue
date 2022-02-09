@@ -5,6 +5,7 @@ import SimpleKeyboard from "./components/Keyboard.vue";
 import Loading from "./components/Loading.vue";
 import Context from "./components/Context.vue";
 
+import Dock from "./components/Dock.vue";
 
 function parseJwt(token) {
   let base64Url = token.split('.')[1];
@@ -17,7 +18,7 @@ function parseJwt(token) {
 }
 
 export default {
-  components: {Context, Loading, SimpleKeyboard, Element, Frame},
+  components: {Context, Loading, SimpleKeyboard, Element, Frame, Dock},
   data() {
     return {
       state: {
@@ -83,16 +84,6 @@ export default {
       }, deep: true
     }
   },
-  emits: {
-    toUdap: ({target, operation, payload}) => {
-      this.connection.websocket.send(JSON.stringify({
-            target: target,
-            operation: operation,
-            body: payload
-          }
-      ));
-    }
-  },
   created() {
     this.isConfig()
     this.loadConfig()
@@ -101,14 +92,13 @@ export default {
   computed: {
     media: function () {
       let entity = this.entities.find(e => e.type === 'media')
-      if(entity !== null) return {entity: null, attributes: []}
       let attrs = this.attributes.filter(e => e.entity === entity.id)
       return {
         entity: entity,
         attributes: attrs,
       }
     },
-    bgImg() {
+    background() {
       return `/custom/${this.preferences.background || "viridian"}@4x.png`
     }
   },
@@ -143,24 +133,6 @@ export default {
       let str = JSON.stringify(obj)
       localStorage.setItem("context", str)
     },
-    updateLocal(section, body) {
-      let context = localStorage.getItem(section);
-      if (!context) {
-        localStorage.setItem(section, JSON.stringify(body))
-        return
-      }
-      let object = JSON.parse(context)
-      object = body
-      localStorage.setItem(section, JSON.stringify(object))
-    },
-    pullUpdates(section) {
-      let context = localStorage.getItem(section);
-      if (context === 'undefined') {
-        localStorage.setItem(section, JSON.stringify(prev))
-        return
-      }
-      return JSON.parse(context)
-    },
     request(target, operation, body) {
       this.connection.websocket.send(JSON.stringify({
             target: target,
@@ -179,6 +151,7 @@ export default {
       ));
     },
     connect() {
+      this.timings = []
       if (this.connection.connecting || this.connection.connected || this.session.token === "") return
 
       let host = `ws://${this.config.host}:${this.config.port}/socket/${this.session.token}`
@@ -268,7 +241,7 @@ export default {
       setTimeout(this.connect, 1000)
     },
     rootClasses() {
-      return `${this.preferences.theme === 'dark' ? 'theme-dark' : 'theme-light'} ${this.preferences.input === 'touchscreen' ? 'input-touch' : ''} accent-${this.preferences.accent} blurs-${this.preferences.blur} padding-${this.preferences.padding}`
+      return `theme-${this.preferences.theme} ${this.preferences.input === 'touchscreen' ? 'input-touch' : ''} accent-${this.preferences.accent} blurs-${this.preferences.blur}`
     },
   }
 
@@ -278,12 +251,8 @@ export default {
 
 <template>
   <div class="root" v-bind:class="rootClasses()">
-    <img :key="bgImg" :src="bgImg" alt="Background" class="backdrop" style=""/>
+    <img :src="background" alt="Background" class="backdrop"/>
     <router-view/>
-
-    <Context :open="this.state.error">
-      {{ this.state.error }}
-    </Context>
     <SimpleKeyboard v-if="state.keyboard" :input="this.state.input"></SimpleKeyboard>
   </div>
 </template>

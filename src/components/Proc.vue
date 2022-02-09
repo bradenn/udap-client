@@ -94,15 +94,15 @@ export default {
       ctx.shadowColor = `rgba(255,255,255,0.25)`;
       ctx.strokeStyle = `rgba(255,255,255,${map_range(frequency, this.config.min, this.config.max, 0.0625, 0.5)})`;
 
-      let amplitude = this.height / 2;
+      let amplitude = this.height;
       let f = 0
 
       while (f <= width) {
         let k = height / 2 // Vertical Offset
         let b = (100/frequency)
-        amplitude = this.height / map_range(frequency, this.config.min, this.config.max, 0, this.height / 2);
+        amplitude = this.height / map_range(frequency, this.config.min, this.config.max, 0, this.height / 4);
 
-        y = amplitude * Math.sin(((f)/width)/(b) + this.cycle * 4) + k;
+        y = amplitude * Math.sin(((f)/width +this.cycle/2 + x)/(b)) + k;
         ctx.lineTo(f, y + Math.random());
         f = f + 1;
       }
@@ -114,9 +114,11 @@ export default {
 </script>
 
 <template>
+  <div>
+    <div class="label-ys label-o2 position-absolute mt-3">{{timings.length}} processes</div>
   <div class="frequencies">
     <canvas id="canvas" class="frequencies"></canvas>
-
+  </div>
   </div>
 </template>
 
@@ -124,7 +126,7 @@ export default {
 
 .frequencies {
   width: 8rem !important;
-  height: 2rem !important;
+  height: 1.4rem !important;
   padding: 0;
   margin: 0;
 }

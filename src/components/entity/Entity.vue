@@ -304,16 +304,13 @@ export default {
       return `rgba(${rgb[0]},${rgb[1]},${rgb[2]},${this.active ? intensity : 0})`
     },
     isOn: function () {
-      let c = this.$root.attributes.find(a => a.entity === this.entity.id && a.key === 'on')
-      return c ? c : null
+      let c;
+      c = this.$root.attributes.find(a => a.entity === this.entity.id && a.key === 'on')
+      return c ? c.value === 'true' : false;
+
     },
     active: function () {
-      let c = this.$root.attributes.find(a => a.entity === this.entity.id && a.key === 'on')
-      if (c) {
-        return !!c.value
-      } else {
-        return false
-      }
+      return this.$root.attributes.find(a => a.entity === this.entity.id && a.key === 'on')
     },
   },
   methods: {
@@ -326,7 +323,6 @@ export default {
         this.double--
       }, 500)
     },
-
     pushStop: function (e) {
       this.sliding = false
     },
@@ -360,8 +356,9 @@ export default {
 </script>
 
 <template>
-  <div v-if="bulb" >
-    <span class="label-sm" :style="active?`text-shadow: 0 0 4px ${currentColor};`:''"><span v-if="selected" >􀛮</span><span v-else>􀛭</span></span>
+  <div v-if="bulb">
+    <span :style="active?`text-shadow: 0 0 4px ${currentColor};`:''" class="label-sm"><span
+        v-if="selected">􀛮</span><span v-else>􀛭</span></span>
     <span class="label-xxs px-1 label-w500">{{ entity.name }}</span>
   </div>
   <div v-else-if="manage">
@@ -387,7 +384,7 @@ export default {
     </div>
   </div>
   <div v-else-if="small">
-    <div :class="active?'active':''" class="entity-small" @click="toggleMenu()">
+    <div :class="isOn?'active':''" class="entity-small" @click="toggleMenu()">
       <div class="entity-header">
         <div class="icon">
           {{ entity.icon ? entity.icon : '􀛮' }}
@@ -398,11 +395,13 @@ export default {
       </div>
       <div class="fill"></div>
       <div class="label-xxs label-o3 label-w400 px-2">
+        <div v-if="isOn">ON</div>
+        <div v-else>OFF</div>
       </div>
     </div>
-    <div v-if="context" class="context" @click="toggleMenu">
-
-      <div class="top d-flex">
+    <div v-if="context" class="context"></div>
+    <div v-if="context" @click="toggleMenu">
+      <div class="entity-context top d-flex">
         <div class="d-flex flex-column gap px-3 top ">
           <div class="d-flex justify-content-start align-items-end align-content-end" v-on:click.stop>
             <div>
@@ -412,7 +411,7 @@ export default {
             </div>
             <div class="fill"></div>
             <div class="h-bar">
-<!--              <Attribute v-if="this.active" :attribute="this.active" small></Attribute>-->
+              <Attribute v-if="this.active" :attribute="this.active" small></Attribute>
               <div class="mx-1 my-1"
                    style="width: 0.0625rem; border-radius: 1rem; background-color: rgba(255,255,255,0.2);"></div>
               <div class="label-sm label-w600 label-o3 px-2 text-uppercase" @click="toggleAdvanced()">

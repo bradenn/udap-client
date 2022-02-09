@@ -49,7 +49,7 @@ export default {
         name: 'Networks'
         }"></Header>
         <div class="context-container context-container-md gap-1">
-          {{this.$root.devices}}
+
           <div v-for="network in this.$root.networks">
             <div class="element">
               <div class="h-bar justify-content-start align-items-center align-content-center">

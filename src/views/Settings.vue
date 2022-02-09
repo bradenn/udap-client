@@ -1,12 +1,6 @@
 <script>
-import Sidebar from "../components/Sidebar.vue";
-import Dock from "../components/Dock.vue";
-import Context from "../components/Context.vue";
-import Header from "../components/Header.vue";
-
-
 export default {
-  components: {Context, Sidebar, Dock, Header},
+  components: {},
   data() {
     return {
       header: {

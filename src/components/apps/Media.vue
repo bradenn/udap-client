@@ -114,8 +114,8 @@ export default {
 <template>
 
   <div v-if="small" class="">
-    <div class="d-flex justify-content-between" style="width: 14rem" @click="menu = !menu">
-      <div class="d-flex align-items-center gap">
+    <div class="d-flex justify-content-between element" v-if="playing" style="width: 13rem;" @click="menu = !menu">
+      <div class="d-flex align-items-start gap">
         <div>
           <div :style="`background-image: url(${track.thumbnail});`" class="media-content-sm"></div>
         </div>
@@ -131,7 +131,6 @@ export default {
       </div>
 
       <div class="d-flex justify-content-between align-items-center gap label-o1 label-xxs px-1">
-        <div class="dock-icon w-100" v-on:click="togglePlay"><span v-if="playing">􀊅</span><span v-else>􀊃</span></div>
         <span v-if="menu">􀆈</span><span v-else>􀆈</span>
       </div>
     </div>

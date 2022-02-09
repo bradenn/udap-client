@@ -78,11 +78,12 @@ export default {
 
 <template>
   <div class="top d-flex justify-content-start align-items-center gap-1">
-    <div class="element">
-      <Media small></Media>
-    </div>
-    <div class="element d-flex align-items-center justify-content-center" style="width: 100%;">
-      <Proc></Proc>
+    <Media  small>
+    </Media>
+    <div class="element d-flex align-items-center justify-content-center">
+      <div>
+        <Proc class="" style=" z-index: -1; opacity: 0.25;"></Proc>
+      </div>
       <div class="v-sep"></div>
       <div class="focus-container px-1 " @click="hardReload">
         <div :class="`focus-animate-${this.focus}`" class="focus-inner label-o2">􀝝</div>

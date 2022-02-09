@@ -99,7 +99,7 @@ export default {
 
 <template>
 
-  <div class="terminal h-100 " v-on:mousedown="dragStart" v-on:mousemove="dragContinue" v-on:mouseup="dragStop">
+  <div class="terminal h-100" v-on:mousedown="dragStart" v-on:mousemove="dragContinue" v-on:mouseup="dragStop" :style="`transform: translateY(calc(-${distance}rem));`">
     <div class="generic-container">
       <div class="generic-slot-sm">
         <Clock inner></Clock>
@@ -110,9 +110,9 @@ export default {
     </div>
 
     <div class="h-100" >
-      <router-view v-slot="{ Component }" :style="`transform: translateY(calc(-${distance}rem));`">
-        <transition :name="transitionName" mode="out-in">
-          <component :is="Component" class="child-view"  />
+      <router-view v-slot="{ Component }" >
+        <transition :name="transitionName" mode="out-in" class="child-view">
+          <component :is="Component"/>
         </transition>
       </router-view>
     </div>

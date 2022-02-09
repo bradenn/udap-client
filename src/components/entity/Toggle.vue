@@ -2,6 +2,7 @@
 
 import Dock from "../Dock.vue";
 import Loading from "../Loading.vue";
+
 export default {
   name: "Toggle",
   components: {Loading, Dock},

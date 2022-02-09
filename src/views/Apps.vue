@@ -3,6 +3,7 @@
 import Room from "./Room.vue";
 import Hexagon from "../components/Hexagon.vue";
 import Pane from "../components/Pane.vue";
+
 export default {
   components: {Pane, Hexagon, Room},
   data() {
