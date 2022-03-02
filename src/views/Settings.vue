@@ -17,7 +17,6 @@ export default {
 
 <template>
   <div class="window">
-    <div class="context"></div>
     <div class="main-sidebar top">
       <div class="context-container">
         <div class="d-flex justify-content-between align-items-end align-content-end mb-1" v-on:click.stop>

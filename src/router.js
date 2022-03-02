@@ -5,11 +5,14 @@ import Register from "./views/Register.vue";
 import Settings from "./views/Settings.vue";
 import Endpoint from "./views/settings/Endpoint.vue";
 import Connection from "./views/settings/Connection.vue";
-import Entities from "./views/settings/Endpoints.vue";
+import Entities from "./views/settings/Entities.vue";
 import Whiteboard from "./components/apps/Whiteboard.vue";
 import Network from "./views/Network.vue";
 import Media from "./components/apps/Media.vue";
+import Wifi from "./components/apps/Wifi.vue";
 import Room from "./views/Room.vue";
+import Endpoints from "./views/settings/Endpoints.vue";
+import Energy from "./components/apps/Energy.vue";
 
 const routes = [
     {
@@ -38,6 +41,13 @@ const routes = [
                 meta: {slideOrder: 4},
             },
             {
+                path: '/terminal/wifi',
+                name: 'Wifi',
+                component: Wifi,
+                icon: '􀏒',
+                meta: {slideOrder: 4},
+            },
+            {
                 path: '/terminal/apps/media',
                 name: 'Media',
                 component: Media,
@@ -49,6 +59,13 @@ const routes = [
                 name: 'Room',
                 component: Room,
                 icon: '􀑪',
+                meta: {slideOrder: 4},
+            },
+            {
+                path: '/terminal/energy',
+                name: 'Energy',
+                component: Energy,
+                icon: '',
                 meta: {slideOrder: 4},
             },
             {
@@ -70,6 +87,14 @@ const routes = [
                         component: Endpoint,
                         icon: 'bi-display',
                         sf: '􀢹',
+                        meta: {slideOrder: 4},
+                    },
+                    {
+                        path: '/terminal/settings/endpoints',
+                        name: 'Endpoints',
+                        component: Endpoints,
+                        icon: 'bi-display',
+                        sf: '􀞿',
                         meta: {slideOrder: 4},
                     },
                     {

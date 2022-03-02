@@ -318,11 +318,13 @@ $themes: (
 .cluster-lg {
   width: 32rem;
 }
+
 .cluster {
   @extend .element;
+  width: 22rem;
   flex-shrink: 1;
   display: grid;
-  width: 22rem;
+
   border-radius: 0.8rem !important;
   grid-template-columns: 1fr 1fr;
   justify-content: start;
@@ -369,7 +371,7 @@ backdrop-filter: none !important;
   flex-direction: row;
 
   border-radius: 0.5rem !important;
-  padding: 0.375rem 0.25rem !important;
+  padding: 0.375rem 0.375rem !important;
 }
 
 .entity-manage {
@@ -1727,8 +1729,6 @@ hr {
 .terminal {
   padding: 1em;
   height: 100% !important;
-  overflow: no-display;
-
   flex-direction: column;
   justify-content: start;
 }

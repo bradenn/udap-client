@@ -7,13 +7,12 @@ export default {
     return {
     }
   },
-
   computed: {
     entities: function () {
       function compare(a, b) {
-        if (a.order < b.order)
+        if (a.created < b.created)
           return -1;
-        if (a.order > b.order)
+        if (a.created > b.created)
           return 1;
         return 0;
       }

@@ -362,7 +362,7 @@ export default {
     <span class="label-xxs px-1 label-w500">{{ entity.name }}</span>
   </div>
   <div v-else-if="manage">
-    <div :class="selected?'active':''" class="entity-small entity-manage clickable align-items-end">
+    <div :class="isOn?'active':''" class="entity-small">
       <div class="entity-header">
         <div :style="`text-shadow: 0 0 4px ${currentColor};`" class="icon">
           {{ entity.icon ? entity.icon : '􀛮' }}
@@ -373,9 +373,6 @@ export default {
       </div>
       <div class="fill"></div>
       <div class="d-flex align-items-center">
-        <div class="label-ys label-o2 label-w600 px-1 text-uppercase">
-          {{ active ? "On" : "OFF" }}
-        </div>
         <div class="label-xxs label-o3 label-w300 px-1">
           <span v-if="selected">􀝜</span><span v-else>􀀀</span>
         </div>
@@ -389,7 +386,7 @@ export default {
         <div class="icon">
           {{ entity.icon ? entity.icon : '􀛮' }}
         </div>
-        <div class="label-xxs label-w400 label-o4">
+        <div class="label-xxs label-w400 label-o4 px-1">
           {{ entity.name }}
         </div>
       </div>

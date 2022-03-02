@@ -11,7 +11,7 @@ export default {
       canvas: null,
       config: {
         min: 250,
-        max: 8000,
+        max: 6000,
       },
       colors: [
         "rgba(255, 69, 58,0.6)",
@@ -100,10 +100,10 @@ export default {
       while (f <= width) {
         let k = height / 2 // Vertical Offset
         let b = (100/frequency)
-        amplitude = this.height / map_range(frequency, this.config.min, this.config.max, 0, this.height / 4);
+        amplitude = this.height / map_range(frequency, this.config.min, this.config.max, 0, this.height / 3);
 
         y = amplitude * Math.sin(((f)/width +this.cycle/2 + x)/(b)) + k;
-        ctx.lineTo(f, y + Math.random());
+        ctx.lineTo(f, y);
         f = f + 1;
       }
       ctx.stroke();
@@ -126,7 +126,7 @@ export default {
 
 .frequencies {
   width: 8rem !important;
-  height: 1.4rem !important;
+  height: 2rem !important;
   padding: 0;
   margin: 0;
 }

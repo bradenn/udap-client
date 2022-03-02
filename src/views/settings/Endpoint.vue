@@ -4,6 +4,7 @@ import Dock from "../../components/Dock.vue";
 
 export default {
   components: {Dock},
+  name: "Endpoint",
   data() {
     return {
       loaded: false,

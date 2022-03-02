@@ -17,7 +17,7 @@ export default {
     },
     test() {
       this.$http.get(`http://${this.$root.config.host}:${this.$root.config.port}/status`)
-          .then(this.testResult).catch(this.testResult)
+          .then(this.testResult).catch(this.rejected)
     },
     testResult(result){
       if(result.status === 200) {
@@ -42,7 +42,7 @@ export default {
     <div class="row">
       <div class="col-12 d-flex justify-content-around mt-5">
         <div class="element px-3">
-          <h5 class="my-1">Register Endpoint</h5>
+          <h4 class="my-1">Register Endpoint</h4>
           <div v-if="error" class="small text-danger">{{ error }}</div>
           <form class=" pt-2 pb-2">
             <label class="form-label">Host</label>

@@ -118,7 +118,7 @@ export default {
     </div>
 
     <div class="footer mt-3">
-      <div class="position-absolute" style="left:1rem;">
+      <div class="position-absolute" style="left:1rem;" v-if="sys">
         <div class="label-xxs label-o4 label-w600 lh-1 text-lowercase">{{sys.name}} v{{sys.version}}</div>
         <div class="label-ys label-o2 label-w500 lh-1">{{sys.environment}} build</div>
       </div>
@@ -134,13 +134,14 @@ export default {
         <div class="macro-icon">
           <router-link class="macro-icon-default" to="/terminal/apps/media" draggable="false">􀑪</router-link>
         </div>
-
-        <div class="macro-icon">
-          <router-link class="macro-icon-default" to="/terminal/apps/whiteboard" draggable="false">􀤳</router-link>
-        </div>
-
         <div class="macro-icon">
           <router-link class="macro-icon-default" to="/terminal/network/" draggable="false">􁅏</router-link>
+        </div>
+        <div class="macro-icon">
+          <router-link class="macro-icon-default" to="/terminal/wifi/" draggable="false">􀙇</router-link>
+        </div>
+        <div class="macro-icon">
+          <router-link class="macro-icon-default" to="/terminal/energy/" draggable="false">􀋦</router-link>
         </div>
         <div class="macro-icon">
           <router-link class="macro-icon-default" to="/terminal/settings/endpoint" draggable="false">􀍟</router-link>

@@ -1,9 +1,9 @@
 <script>
 
-
+import Header from "../../components/Header.vue";
 export default {
   name: "Endpoints",
-  components: {},
+  components: {Header},
   data() {
     return {
       header: {
@@ -68,6 +68,9 @@ export default {
 
 <template>
   <Header :target="header"></Header>
+
+  {{this.$root.endpoints}}
+
   <div class="context-container context-container-sm gap">
     <div class="element" v-for="endpoint in endpoints" :key="endpoint.id">
       <div class="h-bar justify-content-start align-items-center align-content-center">

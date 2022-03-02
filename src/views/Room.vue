@@ -67,15 +67,22 @@ export default {
       }
     },
     manifest: function () {
+      function compare(a, b) {
+        if (a.created < b.created)
+          return -1;
+        if (a.created > b.created)
+          return 1;
+        return 0;
+      }
       return this.$root.entities.filter(a => {
-        if(a.type)
-        return a.type === "spectrum"
+        if (a.type)
+          return a.type === "spectrum"
       }).map(e => {
         e.selected = this.selected.includes(e.id)
         let pos = {};
 
         return e
-      })
+      }).sort(compare)
     }
   },
   methods: {
@@ -92,15 +99,8 @@ export default {
 
     },
     gridClick(y, x) {
-      if (this.cooldown) return
-      this.cooldown = true
-      setTimeout(this.reset, 16)
-      for (let a = y - this.grid.radius; a < y + this.grid.radius; a++) {
-        for (let b = x - this.grid.radius; b < x + this.grid.radius; b++) {
-          let c = Math.sqrt(Math.abs(Math.pow(b - x, 2) + Math.pow(a - y, 2)))
-          this.set(b, a, c === 0 ? 20 : (this.grid.radius / c) * 64)
-        }
-      }
+
+
       /*    for(let a = Math.max(0, y - rad); a < Math.min(44, y + rad); a++){
 
           }*/
@@ -126,6 +126,27 @@ export default {
         this.selected.push(id)
       }
     },
+    selectAll: function () {
+      for (let manifestElement of this.manifest) {
+        this.selectOne(manifestElement.id)
+      }
+    },
+    toggleAll: function (state) {
+      let attr = {
+        key: "on",
+        request: `${state}`,
+        value: ''
+      }
+      this.commitChangeAll(attr)
+    },
+    dimAll: function (value) {
+      let attr = {
+        key: "dim",
+        request: `${value}`,
+        value: '10'
+      }
+      this.commitChangeAll(attr)
+    },
     commitChangeAll(attribute) {
       let filtered = this.$root.attributes.filter(a => a.key === attribute.key && this.selected.includes(a.entity))
       filtered.map(a => {
@@ -133,7 +154,6 @@ export default {
         this.$root.requestId("attribute", "request", a, a.id)
         return a
       })
-      this.attribute.value = this.attribute.request
     },
     groupBy(xs, key) {
       return xs.reduce(function (rv, x) {
@@ -153,18 +173,33 @@ export default {
     <div class="grid-pane">
       <div class="pane-room element">
         <div class="room-container">
-          <div class="room label-o2">
+          <div class="room label-o2 m-1">
             <div
                 v-for="light in manifest.filter(m => m.type === 'spectrum')"
                 :key="light.id"
-                :style="`position: absolute; top: ${JSON.parse(light.position).y}%; left: ${JSON.parse(light.position).x}%; height: 1rem; width: 100%;`" @click="() => selectOne(light.id)">
-              <Entity bulb :selected="light.selected" :entity="light"></Entity>
+                :style="`position: absolute; top: ${JSON.parse(light.position).y}%; left: ${JSON.parse(light.position).x}%; height: 1rem; width: 100%;`"
+                @click="() => selectOne(light.id)">
+              <Entity :entity="light" :selected="light.selected" bulb></Entity>
 
             </div>
           </div>
         </div>
       </div>
-      <div class="pane-entities d-flex flex-column gap-1 top mx-2">
+
+      <div class="pane-entities d-flex flex-column gap top mx-2">
+        <div class="element d-flex gap align-items-center px-2">
+          <div class="label-xs label-w500 label-o4 px-1" v-on:click="toggleAll(true)">ON</div>
+          <div class="label-xs label-w500 label-o4 px-1" v-on:click="toggleAll(false)">OFF</div>
+          <div class="mx-2 my-1"
+               style="width: 0.0255rem; height: 1rem; border-radius: 1rem; background-color: rgba(255,255,255,0.1);"></div>
+          <div class="label-xs label-w500 label-o4 px-1" v-on:click="dimAll(25)">25%</div>
+          <div class="label-xs label-w500 label-o4 px-1" v-on:click="dimAll(50)">50%</div>
+          <div class="label-xs label-w500 label-o4 px-1" v-on:click="dimAll(50)">75%</div>
+          <div class="mx-2 my-1"
+               style="width: 0.0255rem; height: 1rem; border-radius: 1rem; background-color: rgba(255,255,255,0.1);"></div>
+          <div class="label-xs label-w500 label-o4 px-3" v-on:click="selectAll()">Select All</div>
+        </div>
+
         <div class="d-flex flex-column gap">
           <Range v-for="attribute in global" :key="attribute.id" :attribute="attribute" :commit="commitChangeAll"
           ></Range>
@@ -221,7 +256,7 @@ export default {
   aspect-ratio: 0.7352973 !important;
   height: 20rem;
   clip-path: polygon(0% 100%, 100% 100%, 100% 0%, 65% 0%, 65% 8%, 0% 52%);
-  background-color: rgba(47,47,50, 0.5);
+  background-color: rgba(255, 255, 255, 0.0625);
 }
 
 .unit-inner {
